@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/color_ffffff"
+    android:padding="5dp">
+
+    <TextView
+        android:id="@+id/tv_info"
+        android:textSize="14sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="115dp"
+        android:lineSpacingExtra="5dp"
+        android:maxLines="2"
+        android:text="通讯帝正式上线"
+        android:textColor="@color/color_393939" />
+
+    <ImageView
+        android:id="@+id/iv_info"
+        android:layout_width="110dp"
+        android:layout_height="85dp"
+        android:scaleType="centerCrop"
+        android:layout_alignParentRight="true"
+        android:src="@mipmap/ic_launcher" />
+</RelativeLayout>
