@@ -10,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.cc.tongxundi.R;
+import com.cc.tongxundi.activity.VideoDesActivity;
+import com.cc.tongxundi.activity.VideoPlayActivity;
 import com.tencent.rtmp.ui.TXCloudVideoView;
 
 import java.util.logging.Logger;
@@ -21,6 +23,8 @@ public class MediaPlayView extends FrameLayout implements MediaPlayManager.PlayL
     private String TAG = "MediaPlayView";
     private ImageView mIvPause;
     private ProgressBar mPbPlay;
+    private ImageView mIvScreen;
+    private String url;
 
     public MediaPlayView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -34,6 +38,7 @@ public class MediaPlayView extends FrameLayout implements MediaPlayManager.PlayL
     }
 
     private void initView() {
+        mIvScreen = (ImageView) findViewById(R.id.iv_screen);
         mPbPlay = (ProgressBar) findViewById(R.id.pb_play);
         mPbLoading = (ProgressBar) findViewById(R.id.pb);
         mVideoView = (TXCloudVideoView) findViewById(R.id.tx_video);
@@ -51,10 +56,21 @@ public class MediaPlayView extends FrameLayout implements MediaPlayManager.PlayL
                 }
             }
         });
+        mIvScreen.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                VideoPlayActivity.startActivity(getContext(), url);
+            }
+        });
 
     }
 
+    public ImageView getIvScreen() {
+        return mIvScreen;
+    }
+
     public void startPlay(Context context, String url) {
+        this.url = url;
         mIvPause.setImageResource(R.drawable.icon_restart);
         mPbLoading.setVisibility(VISIBLE);
         MediaPlayManager.getInstance(context).setPlayListener(this);

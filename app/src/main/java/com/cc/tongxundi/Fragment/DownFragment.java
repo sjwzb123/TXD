@@ -3,6 +3,9 @@ package com.cc.tongxundi.Fragment;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,16 +17,30 @@ import android.widget.Toast;
 
 import com.cc.tongxundi.BaseFragment;
 import com.cc.tongxundi.R;
+import com.cc.tongxundi.adapter.DownAdapter;
+import com.cc.tongxundi.bean.DownBean;
+import com.cc.tongxundi.bean.InfoBean;
+import com.cc.tongxundi.down.DownloadListner;
+import com.cc.tongxundi.down.DownloadManager;
+import com.cc.tongxundi.down.Http.HttpNetCallBack;
+import com.cc.tongxundi.down.HttpUtil;
 import com.cc.tongxundi.utils.DownloadUtil;
+import com.cc.tongxundi.utils.GsonManager;
 import com.cc.tongxundi.utils.SPManager;
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.google.gson.reflect.TypeToken;
+
+import java.util.List;
 
 
-public class DownFragment extends BaseFragment implements View.OnClickListener {
-    private ImageView mIvDown;
-    private Button mBtnDown;
-    private ProgressBar mPb;
-    private TextView mTvDownFile;
+public class DownFragment extends BaseFragment {
     private SPManager spManager;
+    private RecyclerView mRv;
+    private SwipeRefreshLayout mSrl;
+    private DownAdapter mAdapter;
+    private int pageNo;
+    private boolean isRef;
+    private boolean isDownIng;
 
     @Nullable
     @Override
@@ -41,51 +58,120 @@ public class DownFragment extends BaseFragment implements View.OnClickListener {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initView(view);
-    }
-
-    private void initView(View view) {
-        mTvDownFile = (TextView) view.findViewById(R.id.tv_down_file);
-        mBtnDown = (Button) view.findViewById(R.id.btn_down);
-        mIvDown = (ImageView) view.findViewById(R.id.iv_down);
-        mBtnDown.setOnClickListener(this);
-        mPb = (ProgressBar) view.findViewById(R.id.pb_down);
-        boolean isDown = (boolean) spManager.getSharedPreference(SPManager.KEY_IS_DOWN, false);
-        if (isDown) {
-            mBtnDown.setText("已下载，点击重新下载");
-            String filePath = Environment.getExternalStorageDirectory() + DownloadUtil.downFile;
-            mTvDownFile.setText("文件保存地址：" + filePath);
-        } else {
-            mBtnDown.setText("下载");
-            mTvDownFile.setText("文件未下载");
-        }
+        getNetData();
     }
 
     @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btn_down:
-                downFile();
-                break;
-        }
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+
     }
 
-    private void downFile() {
-        mTvDownFile.setText("正在连接中");
-        mBtnDown.setVisibility(View.GONE);
-        DownloadUtil.get().download(DownloadUtil.downUrl, DownloadUtil.downFile, new DownloadUtil.OnDownloadListener() {
+    private void initView(View view) {
+        mSrl = (SwipeRefreshLayout) view.findViewById(R.id.srl);
+        mSrl.setRefreshing(true);
+        mRv = (RecyclerView) view.findViewById(R.id.rv);
+        mSrl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void onDownloadSuccess() {
+            public void onRefresh() {
+                isRef = true;
+                pageNo = 0;
+                getNetData();
+            }
+        });
+        mAdapter = new DownAdapter(getContext());
+        mRv.setLayoutManager(new LinearLayoutManager(getContext()));
+        mRv.setAdapter(mAdapter);
+        mAdapter.setEnableLoadMore(true);
+        mAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
+            @Override
+            public void onLoadMoreRequested() {
+                isRef = false;
+                getNetData();
+            }
+        }, mRv);
+        mAdapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
+            @Override
+            public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+                switch (view.getId()) {
+                    case R.id.btn_down:
+                        if (isDownIng) {
+                            Toast.makeText(getContext(), "有文件正在下载", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        isDownIng = true;
+                        //downFile();
+                        View itemView = mRv.getChildAt(position);
+                        int downId = mAdapter.getItem(position).getId();
+                        ProgressBar pb = (ProgressBar) itemView.findViewById(R.id.pb_down);
+                        TextView tv = (TextView) itemView.findViewById(R.id.tv_down_file);
+                        Button btnDown = (Button) itemView.findViewById(R.id.btn_down);
+                        String fileName = mAdapter.getItem(position).getFilename();
+                        String downUrl = mAdapter.getItem(position).getPath();
+                        down(downUrl, DownloadUtil.downFile, fileName, tv, btnDown, pb);
+                        break;
+                }
+            }
+        });
+
+    }
+
+    private void getNetData() {
+        HttpUtil.getInstance().dwon(pageNo, new HttpNetCallBack() {
+            @Override
+            public void onFailure(final String errCode, final String errMsg) {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        spManager.put(SPManager.KEY_IS_DOWN, true);
-                        mBtnDown.setText("已下载，点击重新下载");
-                        mBtnDown.setVisibility(View.VISIBLE);
-                        String filePath = Environment.getExternalStorageDirectory() + DownloadUtil.downFile;
-                        mTvDownFile.setText("下载成功文件保存地址：" + filePath);
+                        Toast.makeText(getContext(), "错误信息" + errMsg, Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+            }
+
+            @Override
+            public void onSucc(String response, final int totalPages, int pageStart) {
+                final List<DownBean> list = GsonManager.fromJsonToList(response, new TypeToken<List<DownBean>>() {
+                }.getType());
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (isRef) {
+                            mAdapter.refData(list);
+                        } else {
+                            mAdapter.addMore(list);
+                        }
+                        mSrl.setRefreshing(false);
+                        mAdapter.loadMoreComplete();
+                        if (pageNo == totalPages || list.size() == 0) {
+                            mAdapter.setEnableLoadMore(false);
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+
+    private void down(String downUrl, String saveDir, final String fileName, final TextView tvDownFile, final Button btnDown, final ProgressBar pb) {
+
+        DownloadUtil.get().download(downUrl, saveDir, fileName, new DownloadUtil.OnDownloadListener() {
+            @Override
+            public void onDownloadSuccess() {
+                isDownIng = false;
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        spManager.put("down" + fileName, true);
+                        tvDownFile.setText("已下载，点击重新下载");
+                        btnDown.setVisibility(View.VISIBLE);
+                        String filePath = "根目录" + DownloadUtil.downFile + "/" + fileName;
+                        tvDownFile.setText("下载成功文件保存地址：" + filePath);
                         Toast.makeText(getContext(), "下载成功", Toast.LENGTH_SHORT).show();
                     }
                 });
+
             }
 
             @Override
@@ -93,11 +179,11 @@ public class DownFragment extends BaseFragment implements View.OnClickListener {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mTvDownFile.setText("正在下载中");
-                        mBtnDown.setVisibility(View.GONE);
-                        mPb.setMax(100);
-                        mPb.setSecondaryProgress(progress);
-                        mPb.setProgress(progress);
+                        tvDownFile.setText("正在下载中");
+                        btnDown.setVisibility(View.GONE);
+                        pb.setMax(100);
+                        pb.setSecondaryProgress(progress);
+                        pb.setProgress(progress);
                     }
                 });
 
@@ -105,18 +191,31 @@ public class DownFragment extends BaseFragment implements View.OnClickListener {
 
             @Override
             public void onDownloadFailed() {
-
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mTvDownFile.setText("下载失败请重新下载");
-                        mBtnDown.setText("下载失败请重新下载");
-                        mBtnDown.setVisibility(View.VISIBLE);
-                        Toast.makeText(getContext(), "下载失败", Toast.LENGTH_SHORT).show();
-                    }
-                });
-
+                spManager.put("down" + fileName, false);
+                isDownIng = false;
             }
         });
+//        DownloadManager.getInstance().add(downUrl, new DownloadListner() {
+//            @Override
+//            public void onProgress(float v) {
+//
+//            }
+//
+//            @Override
+//            public void onPause() {
+//
+//            }
+//
+//            @Override
+//            public void onFinished() {
+//
+//            }
+//
+//            @Override
+//            public void onCancel() {
+//
+//            }
+//        });
+//        DownloadManager.getInstance().download(downUrl);
     }
 }

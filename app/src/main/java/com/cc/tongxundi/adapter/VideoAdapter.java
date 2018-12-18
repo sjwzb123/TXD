@@ -17,9 +17,9 @@ public class VideoAdapter extends BaseQuickAdapter<VideoBean, BaseViewHolder> {
 
     @Override
     protected void convert(BaseViewHolder helper, VideoBean item) {
-        helper.setText(R.id.tv_des, item.getVideoDes());
+        helper.setText(R.id.tv_des, item.getDescription());
         ImageView iv = helper.getView(R.id.iv_cover);
-        Glide.with(mContext).load(item.getVideoCover()).into(iv);
+        Glide.with(mContext).load(item.getThumbnailUrl()).into(iv);
     }
 
     public void addMore(List<VideoBean> list) {

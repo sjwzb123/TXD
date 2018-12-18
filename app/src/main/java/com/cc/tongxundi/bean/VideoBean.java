@@ -3,40 +3,56 @@ package com.cc.tongxundi.bean;
 import java.io.Serializable;
 
 public class VideoBean implements Serializable {
-    private String videoDes;
-    private String videoUrl;
-    private int videoDur;
-    private String videoCover;
+    private String description;
+    private String contentUrl;
+    private int duration;
+    private String thumbnailUrl;
 
-    public String getVideoCover() {
-        return videoCover;
+    public String getDescription() {
+        return description;
     }
 
-    public void setVideoCover(String videoCover) {
-        this.videoCover = videoCover;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public String getVideoDes() {
-        return videoDes;
+    public String getContentUrl() {
+        return contentUrl;
     }
 
-    public void setVideoDes(String videoDes) {
-        this.videoDes = videoDes;
+    public void setContentUrl(String contentUrl) {
+        this.contentUrl = contentUrl;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    public String getThumbnailUrl() {
+        return thumbnailUrl;
+    }
+
+    public void setThumbnailUrl(String thumbnailUrl) {
+        this.thumbnailUrl = thumbnailUrl;
     }
 
     public String getVideoUrl() {
-        return videoUrl;
+        return contentUrl;
     }
 
     public void setVideoUrl(String videoUrl) {
-        this.videoUrl = videoUrl;
+        this.contentUrl = videoUrl;
     }
 
     public int getVideoDur() {
-        return videoDur;
+        return duration;
     }
 
     public void setVideoDur(int videoDur) {
-        this.videoDur = videoDur;
+        this.duration = videoDur;
     }
 }

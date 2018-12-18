@@ -1,22 +1,34 @@
 package com.cc.tongxundi.bean;
 
-public class InfoBean {
-    private String infoTitle;
-    private String infoImg;
+public class InfoBean extends BaseBean{
+    private int id;
+    private String title;
+    private String thumbnailUrl;
 
-    public String getInfoTitle() {
-        return infoTitle;
+    public String getThumbnailUrl() {
+        return thumbnailUrl;
     }
 
-    public void setInfoTitle(String infoTitle) {
-        this.infoTitle = infoTitle;
+    public void setThumbnailUrl(String thumbnailUrl) {
+        this.thumbnailUrl = thumbnailUrl;
     }
 
-    public String getInfoImg() {
-        return infoImg;
+    public int getId() {
+        return id;
     }
 
-    public void setInfoImg(String infoImg) {
-        this.infoImg = infoImg;
+    public void setId(int id) {
+        this.id = id;
     }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+
+
 }

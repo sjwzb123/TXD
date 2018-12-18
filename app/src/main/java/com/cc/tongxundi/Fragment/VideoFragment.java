@@ -15,8 +15,14 @@ import com.cc.tongxundi.R;
 import com.cc.tongxundi.activity.VideoDesActivity;
 import com.cc.tongxundi.adapter.InfoAdapter;
 import com.cc.tongxundi.adapter.VideoAdapter;
+import com.cc.tongxundi.bean.InfoBean;
 import com.cc.tongxundi.bean.VideoBean;
+import com.cc.tongxundi.down.Http.HttpNetCallBack;
+import com.cc.tongxundi.down.HttpUtil;
+import com.cc.tongxundi.utils.GsonManager;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +32,8 @@ public class VideoFragment extends BaseFragment {
     private RecyclerView mRvInfo;
     private VideoAdapter mAdapter;
     private SwipeRefreshLayout mSrl;
+    private int pageNo;
+    private boolean isRef;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,14 +68,17 @@ public class VideoFragment extends BaseFragment {
         mSrl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                testData();
+                isRef = true;
+                pageNo = 0;
+                getNetData();
             }
         });
         mAdapter.setEnableLoadMore(true);
         mAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
             @Override
             public void onLoadMoreRequested() {
-                testData();
+                isRef = false;
+                getNetData();
             }
         }, mRvInfo);
     }
@@ -81,25 +92,35 @@ public class VideoFragment extends BaseFragment {
     }
 
     private void getNetData() {
-        testData();
+        HttpUtil.getInstance().vode(pageNo, new HttpNetCallBack() {
+            @Override
+            public void onFailure(String errCode, String errMsg) {
+
+            }
+
+            @Override
+            public void onSucc(String response, final int totalPages, int pageStart) {
+                pageNo++;
+                final List<VideoBean> list = GsonManager.fromJsonToList(response, new TypeToken<List<VideoBean>>() {
+                }.getType());
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (isRef) {
+                            mAdapter.refData(list);
+                        } else {
+                            mAdapter.addMore(list);
+                        }
+                        mAdapter.loadMoreComplete();
+                        mSrl.setRefreshing(false);
+                        if (pageNo == totalPages||list.size()==0) {
+                            mAdapter.setEnableLoadMore(false);
+                        }
+                    }
+                });
+            }
+        });
     }
 
-    private void testData() {
-        String videoUrl = "http://cdn.weshow.me/sg/video/heI3/e3ce55a5489033ed7a572e7159223bd1.mp4";
-        String url = "http://imgsrc.baidu.com/forum/w=580/sign=4899df59da1373f0f53f6f97940e4b8b/dc5095da81cb39db2f272074db160924aa183045.jpg";
-        List<VideoBean> list = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            VideoBean infoBean = new VideoBean();
-            infoBean.setVideoDes("热烈祝贺通讯帝正式上线");
-            infoBean.setVideoCover(url);
-            infoBean.setVideoUrl(videoUrl);
-            list.add(infoBean);
-        }
-        if (mAdapter != null) {
-            mAdapter.addMore(list);
-        }
-        mAdapter.loadMoreComplete();
-        mSrl.setRefreshing(false);
 
-    }
 }

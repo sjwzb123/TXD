@@ -39,7 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:text="版本升级1.0"
+            android:text="版本升级2.0"
             android:textColor="@color/color_333333"
             android:textSize="16sp" />
 

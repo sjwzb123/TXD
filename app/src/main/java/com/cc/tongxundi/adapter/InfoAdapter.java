@@ -17,9 +17,9 @@ public class InfoAdapter extends BaseQuickAdapter<InfoBean, BaseViewHolder> {
 
     @Override
     protected void convert(BaseViewHolder helper, InfoBean item) {
-        helper.setText(R.id.tv_info, item.getInfoTitle());
+        helper.setText(R.id.tv_info, item.getTitle());
         ImageView iv = helper.getView(R.id.iv_info);
-        Glide.with(mContext).load(item.getInfoImg()).into(iv);
+        Glide.with(mContext).load(item.getThumbnailUrl()).into(iv);
     }
 
     public void addMore(List<InfoBean> list) {
@@ -37,4 +37,5 @@ public class InfoAdapter extends BaseQuickAdapter<InfoBean, BaseViewHolder> {
         }
         notifyDataSetChanged();
     }
+
 }
