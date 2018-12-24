@@ -44,31 +44,37 @@
         </RelativeLayout>
 
 
-        <ScrollView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scrollbars="none">
+            android:orientation="vertical">
 
-            <LinearLayout
+            <com.cc.tongxundi.video.MediaPlayView
+                android:id="@+id/video"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_height="200dp"
+                android:background="@color/color_000000"></com.cc.tongxundi.video.MediaPlayView>
 
-                <com.cc.tongxundi.video.MediaPlayView
-                    android:id="@+id/video"
-                    android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:background="@color/color_000000"></com.cc.tongxundi.video.MediaPlayView>
+            <TextView
+                android:id="@+id/tv_des"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:textColor="@color/color_393939"
+                android:textSize="14sp"
+                android:visibility="gone"/>
 
-                <TextView
-                    android:id="@+id/tv_des"
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <fragment
+                    android:id="@+id/comment_fragment"
+                    android:name="com.cc.tongxundi.Fragment.CommentFragment"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:padding="10dp"
-                    android:textColor="@color/color_393939"
-                    android:textSize="14sp" />
-            </LinearLayout>
-        </ScrollView>
+                    android:layout_height="match_parent"></fragment>
+            </FrameLayout>
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout

@@ -27,7 +27,7 @@ public class StartActivity extends BaseActivity {
             @Override
             public void run() {
                 boolean isLogin = (boolean) spManager.getSharedPreference(SPManager.KEY_IS_LOGIN, false);
-                if (isLogin) {
+                if (true) {
                     MainActivity.startActivity(StartActivity.this);
                 } else {
                     LoginActivity.startActivity(StartActivity.this);

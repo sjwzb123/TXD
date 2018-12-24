@@ -5,12 +5,15 @@ import android.text.LoginFilter;
 import android.util.Log;
 
 import com.cc.tongxundi.down.Http.HttpNetCallBack;
+import com.tencent.ijk.media.player.pragma.DebugLog;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
@@ -28,7 +31,7 @@ import okhttp3.Response;
  */
 
 public class HttpUtil {
-    private String TAG = "HttpUtil";
+    private static String TAG = "HttpUtil";
     private static OkHttpClient mOkHttpClient;
     private static HttpUtil mInstance;
     private final static long CONNECT_TIMEOUT = 60;//超时时间，秒
@@ -41,6 +44,10 @@ public class HttpUtil {
     private static final String DOWN_FILE = BASE_URL + "api/file/download?id=";
     private static final String GET_CODE = BASE_URL + "api/user/send-code";
     private static final String LOGIN = BASE_URL + "api/user/login-by-code";
+    private static final String COMMENTLIST = BASE_URL + "api/comment/list?pageNo=";
+    private static final String PUSH_COMMENT = BASE_URL + "api/comment/create";
+    private static final String PUSH_POST = BASE_URL + "api/post/create";
+    private static final String POST_LIST = BASE_URL + "api/post/list?pageNo=";
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
     /**
@@ -182,6 +189,7 @@ public class HttpUtil {
     }
 
     private static void request(String json, String url, final HttpNetCallBack callBack) {
+        DebugLog.d(TAG, "request json " + json);
         RequestBody body = RequestBody.create(JSON, json);
         Request request = new Request.Builder().url(url).post(body).build();
         mOkHttpClient.newCall(request).enqueue(new Callback() {
@@ -194,10 +202,13 @@ public class HttpUtil {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                // DebugLog.d(TAG, "onResponse : body " + response.body().string());
+
+                String body = response.body().string();
+                DebugLog.d(TAG, "onResponse : body " + body);
                 if (callBack != null) {
-                    callBack.onSucc(response.body().string(), 0, 0);
+                    callBack.onSucc(body, 0, 0);
                 }
+
 
                 // try {
                 // JSONObject obj = new JSONObject(response.body().string());
@@ -224,7 +235,7 @@ public class HttpUtil {
         return builder;
     }
 
-    private void getDataAsynFromNet(String url, final HttpNetCallBack netCall) {
+    private void getDataAsynFromNet(final String url, final HttpNetCallBack netCall) {
         //1 构造Request
         Request.Builder builder = new Request.Builder();
         Request request = builder.get().url(url).build();
@@ -234,7 +245,8 @@ public class HttpUtil {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                netCall.onFailure(String.valueOf(1), e.getMessage());
+                if (netCall != null)
+                    netCall.onFailure(String.valueOf(1), e.getMessage());
             }
 
             @Override
@@ -245,11 +257,14 @@ public class HttpUtil {
                     int totalPages = jsRes.optInt("totalPages");
                     int pageStart = jsRes.optInt("pageStart");
                     JSONObject data = jsRes.optJSONObject("data");
-                    netCall.onSucc(data.optString("content"), totalPages, pageStart);
+                    if (netCall != null&&data!=null)
+                        netCall.onSucc(data.optString("content"), totalPages, pageStart);
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    netCall.onFailure(String.valueOf(1), e.getMessage());
+                    if (netCall != null)
+                        netCall.onFailure(String.valueOf(1), e.getMessage());
                 }
+                Log.d(TAG, "request url " + url);
                 Log.d(TAG, "response: " + re);
 
 
@@ -270,6 +285,122 @@ public class HttpUtil {
     public void dwon(int pageNo, HttpNetCallBack callBack) {
         String news_url = DOWN_URL + pageNo;
         getDataAsynFromNet(news_url, callBack);
+    }
+
+    public void getCommentList(int pageNo, int roupType, int groupId, HttpNetCallBack callBack) {
+        String url = COMMENTLIST + pageNo + "&roupType=" + roupType + "&groupId=" + groupId;
+        getDataAsynFromNet(url, callBack);
+
+    }
+
+    public void pushComment(String content, int groupType, int groupId, String replyId, String replyUserId, HttpNetCallBack callBack) {
+        /**
+         * 评论 /api/comment/create POST
+         *    参数：
+         *      userId  #评论者ID
+         *      groupType #评论内容的类型（1：视频 2：资讯 3：帖子）
+         *      groupId  #圈子ID （ groupType=1时传视频ID，groupType=2时传资讯ID， groupType=3时传帖子ID
+         *      content  #评论内容
+         *      replyId  # 回复评论的ID
+         *      replyUserId #回复的评论的发布者ID
+         *
+         *      返回：
+         *      {
+         *         "msg":"评论成功",
+         *         "data":{},
+         *         "status":true
+         *      }
+         */
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.putOpt("content", content);
+            jsonObject.putOpt("groupType", groupType);
+            jsonObject.putOpt("groupId", groupId);
+            jsonObject.putOpt("replyId", replyId);
+            jsonObject.putOpt("replyUserId", replyUserId);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        request(jsonObject.toString(), PUSH_COMMENT, callBack);
+
+
+    }
+
+    /**
+     * 16 发帖接口  /api/post/create  POST
+     * 参数：
+     * title
+     * content
+     * userId
+     * thumbnails
+     * theme
+     * <p>
+     * 返回：
+     * {
+     * "msg":"发帖成功",
+     * "data":"",
+     * "status":true
+     * }
+     */
+    public void postCreate(String title, String content, String userId, List<String> thumbnails, String theme, HttpNetCallBack callBack) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.putOpt("title", title);
+            jsonObject.putOpt("content", content);
+            jsonObject.putOpt("userId", userId);
+            JSONArray jsonArray = new JSONArray();
+            jsonArray.put(thumbnails);
+            jsonObject.putOpt("thumbnails", jsonArray);
+            jsonObject.putOpt("theme", theme);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        request(jsonObject.toString(), PUSH_POST, callBack);
+
+    }
+
+    /**
+     * 15 帖子列表  /api/post/list GET
+     * 参数 pageNo
+     * 返回：
+     * {
+     * "msg": "ok",
+     * "data": {
+     * "content": [
+     * {
+     * "content": "",
+     * "id": "0",
+     * "nickname": "hahahha",
+     * "theme": "压屏",
+     * "thumbnailUrls": [
+     * "http://sdfwe.jpg",
+     * "http://sdfwef.jpg"
+     * ],
+     * "title": "testq",
+     * "userId": 1,
+     * "createTime":182811212212
+     * }
+     * ],
+     * "first": false,
+     * "last": true,
+     * "number": 1,
+     * "numberOfElements": 5,
+     * "pageEnd": 1,
+     * "pageStart": 1,
+     * "size": 10,
+     * "totalElements": 5,
+     * "totalPages": 1
+     * },
+     * "status": true
+     * }
+     *
+     * @param page
+     */
+
+    public void getPostList(int page, HttpNetCallBack callBack) {
+        String url = POST_LIST + page;
+        getDataAsynFromNet(url, callBack);
+
     }
 
     public String getDownFileUrl(int id) {

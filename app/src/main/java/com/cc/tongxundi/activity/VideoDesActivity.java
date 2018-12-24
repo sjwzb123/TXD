@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.cc.tongxundi.BaseActivity;
+import com.cc.tongxundi.Fragment.CommentFragment;
 import com.cc.tongxundi.R;
 import com.cc.tongxundi.WXUitls;
 import com.cc.tongxundi.bean.VideoBean;
@@ -37,6 +38,7 @@ public class VideoDesActivity extends BaseActivity {
     private IWXAPI api;
     private String newsTitle;
     private View shareView;
+    private CommentFragment mCommentFragment;
 
     public static void startActivity(Context context, VideoBean videoBean) {
         Intent intent = new Intent(context, VideoDesActivity.class);
@@ -93,6 +95,7 @@ public class VideoDesActivity extends BaseActivity {
                 onBackPressed();
             }
         });
+        mCommentFragment= (CommentFragment) getSupportFragmentManager().findFragmentById(R.id.comment_fragment);
         initData();
 
     }

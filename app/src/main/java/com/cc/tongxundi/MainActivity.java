@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.cc.tongxundi.Fragment.DownFragment;
 import com.cc.tongxundi.Fragment.InfoFragment;
+import com.cc.tongxundi.Fragment.PostListFragment;
 import com.cc.tongxundi.Fragment.SetFragment;
 import com.cc.tongxundi.Fragment.VideoFragment;
 import com.cc.tongxundi.view.NoScrollViewPager;
@@ -35,7 +36,7 @@ public class MainActivity extends BaseActivity {
     private MyAdapter mAdapter;
     private NoScrollViewPager mViewPager;
     private TabLayout mTableLayout;
-    private String[] titles = {"下载", "资讯", "视频", "我的"};
+    private String[] titles = {"下载", "资讯", "视频", "我的","帖子"};
     private List<BaseFragment> mFragmentList = new ArrayList<>();
     private RelativeLayout mRlTitle;
     private TextView mTvTitle;
@@ -72,6 +73,7 @@ public class MainActivity extends BaseActivity {
         mTableLayout.getTabAt(1).setIcon(R.drawable.info_bg);
         mTableLayout.getTabAt(2).setIcon(R.drawable.video_bg);
         mTableLayout.getTabAt(3).setIcon(R.drawable.user_bg);
+        mTableLayout.getTabAt(3).setIcon(R.drawable.ic_launcher);
         mRlTitle = (RelativeLayout) findViewById(R.id.rl_title);
         mTvTitle = (TextView) findViewById(R.id.tv_title);
         mTableLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -117,6 +119,7 @@ public class MainActivity extends BaseActivity {
         mFragmentList.add(new InfoFragment());
         mFragmentList.add(new VideoFragment());
         mFragmentList.add(new SetFragment());
+        mFragmentList.add(new PostListFragment());
 //        ActionFragment actionFragment = new ActionFragment();
 //        mFragmentList.add(actionFragment);
 //        InforFragment inforFragment = new InforFragment();
