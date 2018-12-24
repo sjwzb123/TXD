@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.cc.tongxundi.BaseFragment;
+import com.cc.tongxundi.PushPostActivity;
 import com.cc.tongxundi.R;
 import com.cc.tongxundi.adapter.PostAadapter;
 import com.cc.tongxundi.down.Http.HttpNetCallBack;
@@ -53,7 +54,7 @@ public class PostListFragment extends BaseFragment {
         view.findViewById(R.id.btn_push_post).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                PushPostActivity.startActivity(getContext());
             }
         });
 

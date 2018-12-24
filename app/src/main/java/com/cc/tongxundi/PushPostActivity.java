@@ -1,5 +1,7 @@
 package com.cc.tongxundi;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,6 +17,11 @@ public class PushPostActivity extends BaseActivity {
     private EditText mEtContent;
     private EditText mEtTitle;
     private Button mBtnPush;
+
+    public static void startActivity(Context context) {
+        Intent intent = new Intent(context, PushPostActivity.class);
+        context.startActivity(intent);
+    }
 
     @Override
     public int getContentView() {
