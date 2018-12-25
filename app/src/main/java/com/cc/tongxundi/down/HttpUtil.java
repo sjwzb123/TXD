@@ -5,6 +5,8 @@ import android.text.LoginFilter;
 import android.util.Log;
 
 import com.cc.tongxundi.down.Http.HttpNetCallBack;
+import com.cc.tongxundi.utils.GsonManager;
+import com.google.gson.Gson;
 import com.tencent.ijk.media.player.pragma.DebugLog;
 
 import org.json.JSONArray;
@@ -220,6 +222,56 @@ public class HttpUtil {
         });
     }
 
+
+    private static void request(String json, String url, final HttpResultCallback callBack) {
+        DebugLog.d(TAG, "request json " + json);
+        RequestBody body = RequestBody.create(JSON, json);
+        final Request request = new Request.Builder().url(url).post(body).build();
+        mOkHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                if (callBack != null) {
+                    callBack.onError(request,e);
+                }
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+
+                String body = response.body().string();
+                DebugLog.d(TAG, "onResponse : body " + body);
+                try {
+                    final String responseMessage=response.message();
+                    final String responseBody = response.body().string();
+                    if(response.code()==200){
+                        if (callBack.mType == String.class) {
+                            //sendSuccessResultCallback(responseBody, resCallBack);
+                            callBack.
+
+                        } else {
+                            GsonManager.fromJsonToList(responseBody, callBack.mType);
+                           // sendSuccessResultCallback(o, resCallBack);
+                        }
+                    }else{
+                        Exception exception=new Exception(response.code()+":"+responseMessage);
+                        //sendFailedStringCallback(response.request(), exception, resCallBack);
+                    }
+                } catch (IOException e) {
+                    //sendFailedStringCallback(response.request(), e, resCallBack);
+                } catch (com.google.gson.JsonParseException e) {//Json解析的错误
+                   // sendFailedStringCallback(response.request(), e, resCallBack);
+                }
+
+
+                // try {
+                // JSONObject obj = new JSONObject(response.body().string());
+                // DebugLog.d(TAG, "response " + obj.toString());
+                // } catch (JSONException e) {
+                // e.printStackTrace();
+                // }
+            }
+        });
+    }
     /**
      * 统一为请求添加头信息
      *

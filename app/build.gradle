@@ -41,5 +41,5 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.2'
     implementation files('libs/liteavsdk.jar')
     implementation 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'
-
+    implementation files('libs/YTX_Android_IM_SDK_v5.4.1r.jar')
 }
