@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 
+import com.cc.tongxundi.utils.SPManager;
 import com.cc.tongxundi.view.LoadingView;
 
 
@@ -18,11 +19,13 @@ import com.cc.tongxundi.view.LoadingView;
 public abstract class BaseActivity extends FragmentActivity {
     public Context mContext;
     public LoadingView mLoadView;
+    public SPManager spManager;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getContentView());
         mContext=this;
+        spManager=new SPManager(this);
         mLoadView=new LoadingView(this,R.style.CustomDialog);
         verifyStoragePermissions(this);
         initView();

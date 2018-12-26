@@ -10,6 +10,7 @@ public class SPManager {
     public static String KEY_IS_LOGIN = "isLogin";
     public static String KEY_PHONE = "phone";
     public static String KEY_ADDR = "addr";
+    public static String KEY_UID="KEY_UID";
     private String FILENAME = "TXD";
     private SharedPreferences sharedPreferences;
     /*

@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cc.tongxundi.Fragment.DownFragment;
+import com.cc.tongxundi.Fragment.IMFragment;
 import com.cc.tongxundi.Fragment.InfoFragment;
 import com.cc.tongxundi.Fragment.PostListFragment;
 import com.cc.tongxundi.Fragment.SetFragment;
@@ -36,7 +37,7 @@ public class MainActivity extends BaseActivity {
     private MyAdapter mAdapter;
     private NoScrollViewPager mViewPager;
     private TabLayout mTableLayout;
-    private String[] titles = {"下载", "资讯", "视频", "我的","帖子"};
+    private String[] titles = {"私信", "下载", "资讯", "视频", "我的", "帖子"};
     private List<BaseFragment> mFragmentList = new ArrayList<>();
     private RelativeLayout mRlTitle;
     private TextView mTvTitle;
@@ -69,11 +70,12 @@ public class MainActivity extends BaseActivity {
         mTableLayout = (TabLayout) findViewById(R.id.main_tab);
         mTableLayout.setupWithViewPager(mViewPager);
         mTableLayout.setTabMode(TabLayout.MODE_FIXED);
-        mTableLayout.getTabAt(0).setIcon(R.drawable.down_bg);
-        mTableLayout.getTabAt(1).setIcon(R.drawable.info_bg);
-        mTableLayout.getTabAt(2).setIcon(R.drawable.video_bg);
-        mTableLayout.getTabAt(3).setIcon(R.drawable.user_bg);
-        mTableLayout.getTabAt(3).setIcon(R.drawable.ic_launcher);
+        mTableLayout.getTabAt(0).setIcon(R.drawable.ic_launcher);
+        mTableLayout.getTabAt(1).setIcon(R.drawable.down_bg);
+        mTableLayout.getTabAt(2).setIcon(R.drawable.info_bg);
+        mTableLayout.getTabAt(3).setIcon(R.drawable.video_bg);
+        mTableLayout.getTabAt(4).setIcon(R.drawable.user_bg);
+        mTableLayout.getTabAt(5).setIcon(R.drawable.ic_launcher);
         mRlTitle = (RelativeLayout) findViewById(R.id.rl_title);
         mTvTitle = (TextView) findViewById(R.id.tv_title);
         mTableLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -115,6 +117,7 @@ public class MainActivity extends BaseActivity {
 
     private void initData() {
         DownFragment downFragment = new DownFragment();
+        mFragmentList.add(new IMFragment());
         mFragmentList.add(downFragment);
         mFragmentList.add(new InfoFragment());
         mFragmentList.add(new VideoFragment());

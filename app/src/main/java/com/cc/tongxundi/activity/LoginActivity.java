@@ -12,12 +12,24 @@ import android.widget.Toast;
 import com.cc.tongxundi.BaseActivity;
 import com.cc.tongxundi.MainActivity;
 import com.cc.tongxundi.R;
+import com.cc.tongxundi.bean.UserBean;
+import com.cc.tongxundi.db.UserDbHelper;
+import com.cc.tongxundi.down.Http.CommonResultBean;
 import com.cc.tongxundi.down.Http.HttpNetCallBack;
+import com.cc.tongxundi.down.HttpResultCallback;
 import com.cc.tongxundi.down.HttpUtil;
+import com.cc.tongxundi.im.IMHelper;
+import com.cc.tongxundi.im.IMListener;
 import com.cc.tongxundi.utils.SPManager;
+import com.tencent.ijk.media.player.pragma.DebugLog;
+import com.yuntongxun.ecsdk.ECDevice;
+import com.yuntongxun.ecsdk.ECError;
+import com.yuntongxun.ecsdk.SdkErrorCode;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import okhttp3.Request;
 
 public class LoginActivity extends BaseActivity {
     private EditText mEtPhone;
@@ -26,6 +38,7 @@ public class LoginActivity extends BaseActivity {
     private EditText mEtAddr;
     private Button mBtnCode;
     private SPManager spManager;
+    private String TAG = "LoginActivity";
 
     public static void startActivity(Context context) {
         Intent intent = new Intent(context, LoginActivity.class);
@@ -41,7 +54,6 @@ public class LoginActivity extends BaseActivity {
     public void initView() {
 
         spManager = new SPManager(this);
-
         mEtAddr = (EditText) findViewById(R.id.et_addr);
         mEtCode = (EditText) findViewById(R.id.et_code);
         mEtPhone = (EditText) findViewById(R.id.et_phone);
@@ -50,7 +62,6 @@ public class LoginActivity extends BaseActivity {
         mBtnCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 getCode();
             }
         });
@@ -71,45 +82,58 @@ public class LoginActivity extends BaseActivity {
             Toast.makeText(this, "账号，验证码，地址不能为空", Toast.LENGTH_SHORT).show();
             return;
         }
-        HttpUtil.getInstance().login(phone, code, addr, new HttpNetCallBack() {
+        HttpUtil.getInstance().login(phone, code, addr, new HttpResultCallback<CommonResultBean<UserBean>>() {
             @Override
-            public void onFailure(String errCode, final String errMsg) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(LoginActivity.this, "登录失败" + errMsg, Toast.LENGTH_SHORT).show();
-                    }
-                });
+            public void onError(Request request, Exception e) {
+
             }
 
             @Override
-            public void onSucc(final String response, int totalPages, int pageStart) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            JSONObject jsonObject = new JSONObject(response);
-                            String msg = jsonObject.optString("msg");
-                            boolean status = jsonObject.optBoolean("status");
-                            if (status) {
-                                Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
-                                spManager.put(SPManager.KEY_IS_LOGIN, true);
-                                spManager.put(SPManager.KEY_ADDR, addr);
-                                spManager.put(SPManager.KEY_PHONE, phone);
-                                MainActivity.startActivity(LoginActivity.this);
-                                finish();
-                            } else {
-                                Toast.makeText(LoginActivity.this, msg, Toast.LENGTH_SHORT).show();
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            Toast.makeText(LoginActivity.this, "登录失败", Toast.LENGTH_SHORT).show();
-                        }
-
-                    }
-                });
+            public void onResponse(CommonResultBean<UserBean> response) {
+                UserBean userBean = response.getData();
+                UserDbHelper.getInstance().insertUser(userBean);
+                spManager.put(SPManager.KEY_UID, String.valueOf(userBean.getId()));
+                spManager.put(SPManager.KEY_IS_LOGIN, true);
+                DebugLog.d(TAG, userBean.toString());
+                loginIM();
             }
         });
+
+    }
+
+    private IMListener imListener = new IMListener() {
+        @Override
+        public void onInitialized() {
+            super.onInitialized();
+            String userId = (String) spManager.getSharedPreference(SPManager.KEY_UID, "");
+            IMHelper.getInstance().login(userId, imListener);
+        }
+
+        @Override
+        public void onError(Exception e) {
+            super.onError(e);
+        }
+
+        @Override
+        public void onConnectState(ECDevice.ECConnectState state, ECError error) {
+            super.onConnectState(state, error);
+
+            if (state == ECDevice.ECConnectState.CONNECT_FAILED) {
+                if (error.errorCode == SdkErrorCode.SDK_KICKED_OFF) {
+                    DebugLog.d(TAG, "==帐号异地登陆");
+                } else {
+                    DebugLog.d(TAG, "==其他登录失败,错误码：" + error.errorCode);
+                }
+                return;
+            } else if (state == ECDevice.ECConnectState.CONNECT_SUCCESS) {
+                DebugLog.i(TAG, "==登陆成功");
+            }
+        }
+
+    };
+
+    private void loginIM() {
+        IMHelper.getInstance().initIMSDK(getApplicationContext(), imListener);
 
     }
 

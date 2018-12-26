@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'org.greenrobot.greendao'
 
 android {
     compileSdkVersion 26
@@ -25,6 +26,11 @@ android {
             jniLibs.srcDirs = ['src/main/jniLibs']
         }
     }
+    greendao {
+        schemaVersion 1
+        daoPackage 'com.cc.tongxundi.greendao'
+        targetGenDir 'src/main/java'
+    }
 }
 
 dependencies {
@@ -42,4 +48,5 @@ dependencies {
     implementation files('libs/liteavsdk.jar')
     implementation 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'
     implementation files('libs/YTX_Android_IM_SDK_v5.4.1r.jar')
+    implementation 'org.greenrobot:greendao:3.2.2'
 }

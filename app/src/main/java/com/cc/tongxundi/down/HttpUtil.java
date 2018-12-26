@@ -1,6 +1,8 @@
 package com.cc.tongxundi.down;
 
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.LoginFilter;
 import android.util.Log;
 
@@ -51,6 +53,8 @@ public class HttpUtil {
     private static final String PUSH_POST = BASE_URL + "api/post/create";
     private static final String POST_LIST = BASE_URL + "api/post/list?pageNo=";
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+    private Handler mHandler;
+    private Gson mGson;
 
     /**
      * @param url        下载链接
@@ -132,6 +136,8 @@ public class HttpUtil {
                 .writeTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
                 .readTimeout(WRITE_TIMEOUT, TimeUnit.SECONDS);
         mOkHttpClient = builder.build();
+        mHandler = new Handler(Looper.getMainLooper());
+        mGson = new Gson();
     }
 
     /**
@@ -166,7 +172,7 @@ public class HttpUtil {
         }
     }
 
-    public void login(String phone, String code, String address, HttpNetCallBack callBack) {
+    public void login(String phone, String code, String address, HttpResultCallback callBack) {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.putOpt("phone", phone);
@@ -223,7 +229,7 @@ public class HttpUtil {
     }
 
 
-    private static void request(String json, String url, final HttpResultCallback callBack) {
+    public void request(String json, String url, final HttpResultCallback callBack) {
         DebugLog.d(TAG, "request json " + json);
         RequestBody body = RequestBody.create(JSON, json);
         final Request request = new Request.Builder().url(url).post(body).build();
@@ -231,35 +237,29 @@ public class HttpUtil {
             @Override
             public void onFailure(Call call, IOException e) {
                 if (callBack != null) {
-                    callBack.onError(request,e);
+                    callBack.onError(request, e);
                 }
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
 
-                String body = response.body().string();
-                DebugLog.d(TAG, "onResponse : body " + body);
-                try {
-                    final String responseMessage=response.message();
-                    final String responseBody = response.body().string();
-                    if(response.code()==200){
-                        if (callBack.mType == String.class) {
-                            //sendSuccessResultCallback(responseBody, resCallBack);
-                            callBack.
 
-                        } else {
-                            GsonManager.fromJsonToList(responseBody, callBack.mType);
-                           // sendSuccessResultCallback(o, resCallBack);
-                        }
-                    }else{
-                        Exception exception=new Exception(response.code()+":"+responseMessage);
+                try {
+                    final String responseMessage = response.message();
+                    String body = response.body().string();
+                    DebugLog.d(TAG, "onResponse : body " + body);
+                    if (response.code() == 200) {
+                        sendSuccResult(mGson.fromJson(body, callBack.mType), callBack);
+
+                    } else {
+                        Exception exception = new Exception(response.code() + ":" + responseMessage);
                         //sendFailedStringCallback(response.request(), exception, resCallBack);
                     }
                 } catch (IOException e) {
                     //sendFailedStringCallback(response.request(), e, resCallBack);
                 } catch (com.google.gson.JsonParseException e) {//Json解析的错误
-                   // sendFailedStringCallback(response.request(), e, resCallBack);
+                    // sendFailedStringCallback(response.request(), e, resCallBack);
                 }
 
 
@@ -272,6 +272,16 @@ public class HttpUtil {
             }
         });
     }
+
+    private void sendSuccResult(final Object o, final HttpResultCallback callback) {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                callback.onResponse(o);
+            }
+        });
+    }
+
     /**
      * 统一为请求添加头信息
      *
@@ -309,7 +319,7 @@ public class HttpUtil {
                     int totalPages = jsRes.optInt("totalPages");
                     int pageStart = jsRes.optInt("pageStart");
                     JSONObject data = jsRes.optJSONObject("data");
-                    if (netCall != null&&data!=null)
+                    if (netCall != null && data != null)
                         netCall.onSucc(data.optString("content"), totalPages, pageStart);
                 } catch (JSONException e) {
                     e.printStackTrace();
