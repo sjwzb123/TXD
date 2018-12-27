@@ -13,8 +13,7 @@ import com.cc.tongxundi.im.IMHelper;
 import com.cc.tongxundi.im.IMListener;
 import com.cc.tongxundi.utils.SPManager;
 import com.tencent.ijk.media.player.pragma.DebugLog;
-import com.yuntongxun.ecsdk.ECError;
-import com.yuntongxun.ecsdk.ECMessage;
+
 
 public class ChatActivity extends BaseActivity {
     private RecyclerView mChatRv;
@@ -45,23 +44,23 @@ public class ChatActivity extends BaseActivity {
     }
 
     private void sendMsg() {
-        String msg = mEtChat.getText().toString();
-        String userId = (String) spManager.getSharedPreference(SPManager.KEY_UID, "");
-        IMHelper.getInstance().sendTXTMsg(msg, userId, imListener);
+//        String msg = mEtChat.getText().toString();
+//        String userId = (String) spManager.getSharedPreference(SPManager.KEY_UID, "");
+//        IMHelper.getInstance().sendTXTMsg(msg, userId, imListener);
     }
 
-    private IMListener imListener = new IMListener() {
-        @Override
-        public void onSendMessageComplete(ECError ecError, ECMessage ecMessage) {
-            super.onSendMessageComplete(ecError, ecMessage);
-            DebugLog.d(TAG,"onSendMessageComplete "+ecError.errorCode+" msg "+ecMessage.toString());
-
-        }
-
-        @Override
-        public void onProgress(String s, int i, int i1) {
-            super.onProgress(s, i, i1);
-            DebugLog.d(TAG,"onProgress "+s+" i "+i);
-        }
-    };
+//    private IMListener imListener = new IMListener() {
+//        @Override
+//        public void onSendMessageComplete(ECError ecError, ECMessage ecMessage) {
+//            super.onSendMessageComplete(ecError, ecMessage);
+//            DebugLog.d(TAG,"onSendMessageComplete "+ecError.errorCode+" msg "+ecMessage.toString());
+//
+//        }
+//
+//        @Override
+//        public void onProgress(String s, int i, int i1) {
+//            super.onProgress(s, i, i1);
+//            DebugLog.d(TAG,"onProgress "+s+" i "+i);
+//        }
+//    };
 }

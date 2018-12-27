@@ -23,7 +23,14 @@ import com.cc.tongxundi.Fragment.InfoFragment;
 import com.cc.tongxundi.Fragment.PostListFragment;
 import com.cc.tongxundi.Fragment.SetFragment;
 import com.cc.tongxundi.Fragment.VideoFragment;
+import com.cc.tongxundi.im.IMHelper;
+import com.cc.tongxundi.im.IMListener;
+import com.cc.tongxundi.utils.SPManager;
 import com.cc.tongxundi.view.NoScrollViewPager;
+import com.tencent.ijk.media.player.pragma.DebugLog;
+import com.yuntongxun.ecsdk.ECDevice;
+import com.yuntongxun.ecsdk.ECError;
+import com.yuntongxun.ecsdk.SdkErrorCode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +49,7 @@ public class MainActivity extends BaseActivity {
     private RelativeLayout mRlTitle;
     private TextView mTvTitle;
     private int REQUEST_WRITE_EXTERNAL_STORAGE = 0;
+    private String TAG = "MainActivity";
 
     public static void startActivity(Context context) {
         Intent intent = new Intent(context, MainActivity.class);
@@ -51,6 +59,29 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        IMHelper.getInstance().initIMSDK(this, new IMListener() {
+            @Override
+            public void onInitialized() {
+                super.onInitialized();
+                String userId = (String) spManager.getSharedPreference(SPManager.KEY_UID, "");
+                IMHelper.getInstance().login(userId, this);
+            }
+
+            @Override
+            public void onConnectState(ECDevice.ECConnectState state, ECError error) {
+                super.onConnectState(state, error);
+                if (state == ECDevice.ECConnectState.CONNECT_FAILED) {
+                    if (error.errorCode == SdkErrorCode.SDK_KICKED_OFF) {
+                        DebugLog.d(TAG, "==帐号异地登陆");
+                    } else {
+                        DebugLog.d(TAG, "==其他登录失败,错误码：" + error.errorCode+" err "+error.toString());
+                    }
+                    return;
+                } else if (state == ECDevice.ECConnectState.CONNECT_SUCCESS) {
+                    DebugLog.i(TAG, "==登陆成功");
+                }
+            }
+        });
 
     }
 

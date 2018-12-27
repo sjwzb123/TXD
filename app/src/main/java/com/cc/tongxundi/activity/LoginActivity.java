@@ -1,7 +1,9 @@
 package com.cc.tongxundi.activity;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -23,8 +25,16 @@ import com.cc.tongxundi.im.IMListener;
 import com.cc.tongxundi.utils.SPManager;
 import com.tencent.ijk.media.player.pragma.DebugLog;
 import com.yuntongxun.ecsdk.ECDevice;
-import com.yuntongxun.ecsdk.ECError;
 import com.yuntongxun.ecsdk.SdkErrorCode;
+import com.yuntongxun.plugin.common.AppMgr;
+import com.yuntongxun.plugin.common.ClientUser;
+import com.yuntongxun.plugin.common.SDKCoreHelper;
+import com.yuntongxun.plugin.common.common.utils.ECPreferences;
+import com.yuntongxun.plugin.common.common.utils.LogUtil;
+import com.yuntongxun.plugin.common.common.utils.ToastUtil;
+import com.yuntongxun.plugin.greendao3.helper.DaoHelper;
+import com.yuntongxun.plugin.im.dao.helper.IMDao;
+
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -52,7 +62,6 @@ public class LoginActivity extends BaseActivity {
 
     @Override
     public void initView() {
-
         spManager = new SPManager(this);
         mEtAddr = (EditText) findViewById(R.id.et_addr);
         mEtCode = (EditText) findViewById(R.id.et_code);
@@ -72,9 +81,11 @@ public class LoginActivity extends BaseActivity {
 
             }
         });
+        initIm();
     }
 
     private void login() {
+        mLoadView.show();
         final String phone = mEtPhone.getText().toString();
         String code = mEtCode.getText().toString();
         final String addr = mEtAddr.getText().toString();
@@ -85,6 +96,7 @@ public class LoginActivity extends BaseActivity {
         HttpUtil.getInstance().login(phone, code, addr, new HttpResultCallback<CommonResultBean<UserBean>>() {
             @Override
             public void onError(Request request, Exception e) {
+                mLoadView.dismiss();
 
             }
 
@@ -95,47 +107,72 @@ public class LoginActivity extends BaseActivity {
                 spManager.put(SPManager.KEY_UID, String.valueOf(userBean.getId()));
                 spManager.put(SPManager.KEY_IS_LOGIN, true);
                 DebugLog.d(TAG, userBean.toString());
-                loginIM();
+                loginIM(String.valueOf(userBean.getId()), "txd");
             }
         });
 
     }
 
-    private IMListener imListener = new IMListener() {
-        @Override
-        public void onInitialized() {
-            super.onInitialized();
-            String userId = (String) spManager.getSharedPreference(SPManager.KEY_UID, "");
-            IMHelper.getInstance().login(userId, imListener);
+
+    private void initIm() {
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(SDKCoreHelper.ACTION_SDK_CONNECT);
+        registerReceiver(mSDKNotifyReceiver, intentFilter);
+
+        if (AppMgr.getClientUser() != null) {
+            LogUtil.d(TAG, "SDK auto connect...");
+            SDKCoreHelper.init(getApplicationContext());
         }
+    }
 
-        @Override
-        public void onError(Exception e) {
-            super.onError(e);
-        }
 
-        @Override
-        public void onConnectState(ECDevice.ECConnectState state, ECError error) {
-            super.onConnectState(state, error);
+    private void loginIM(String userid, String nickName) {
+        //  IMHelper.getInstance().initIMSDK(getApplicationContext(), imListener);
+        ClientUser.UserBuilder builder = new ClientUser.UserBuilder(userid, nickName);
+        // 以下setXXX参数都是可选
+        builder.setAppKey(IMHelper.APPKEY);// AppId(私有云使用)
+        builder.setAppToken(IMHelper.APPTOKEN);// AppToken(私有云使用)
+        // builder.setPwd(et_pwd.getText().toString());// Password不为空情况即通讯账号密码登入
+        // 下面三个参数是调用REST接口使用(如:语音会议一键静音功能)
+        // builder.setAccountSid("accountSid");// 主账号Id(REST使用)
+        // builder.setAuthToken("autoToken");// 账户授权令牌(REST使用)
 
-            if (state == ECDevice.ECConnectState.CONNECT_FAILED) {
-                if (error.errorCode == SdkErrorCode.SDK_KICKED_OFF) {
-                    DebugLog.d(TAG, "==帐号异地登陆");
-                } else {
-                    DebugLog.d(TAG, "==其他登录失败,错误码：" + error.errorCode);
-                }
-                return;
-            } else if (state == ECDevice.ECConnectState.CONNECT_SUCCESS) {
-                DebugLog.i(TAG, "==登陆成功");
-            }
-        }
 
-    };
-
-    private void loginIM() {
-        IMHelper.getInstance().initIMSDK(getApplicationContext(), imListener);
+//            // 公有云使用一个参数login登入
+//             builder.setRestHost("http://app.cloopen.com:8881");// REST 协议+ip+端口(REST使用)
+//             builder.setLvsHost("http://app.cloopen.com:8888");
+        SDKCoreHelper.login(builder.build());
 
     }
+
+    private BroadcastReceiver mSDKNotifyReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            mLoadView.dismiss();
+            if (SDKCoreHelper.ACTION_SDK_CONNECT.equals(intent.getAction())) {
+                if (SDKCoreHelper.isLoginSuccess(intent)) {
+                    String pushToken = ECPreferences.getSharedPreferences().getString("pushToken", null);
+                    LogUtil.d(TAG, "SDK connect Success ,reportToken:" + pushToken);
+                    if (!TextUtils.isEmpty(pushToken)) {
+                        // 上报华为/小米推送设备token
+                        ECDevice.reportHuaWeiToken(pushToken);
+                    }
+                    // 初始化IM数据库
+                    DaoHelper.init(LoginActivity.this, new IMDao());
+                    Intent action = new Intent(LoginActivity.this, MainActivity.class);
+                    action.putExtra("userid", AppMgr.getUserId());
+                    startActivity(action);
+                    finish();
+                } else {
+                    int error = intent.getIntExtra("error", 0);
+                    if (error == SdkErrorCode.CONNECTING) return;
+                    LogUtil.e(TAG, "登入失败[" + error + "]");
+                    ToastUtil.showMessage("登入失败[" + error + "]");
+                }
+            }
+        }
+    };
 
     private void getCode() {
 
