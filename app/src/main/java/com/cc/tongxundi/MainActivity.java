@@ -31,6 +31,7 @@ import com.tencent.ijk.media.player.pragma.DebugLog;
 import com.yuntongxun.ecsdk.ECDevice;
 import com.yuntongxun.ecsdk.ECError;
 import com.yuntongxun.ecsdk.SdkErrorCode;
+import com.yuntongxun.plugin.im.ui.chatting.fragment.ConversationListFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +46,7 @@ public class MainActivity extends BaseActivity {
     private NoScrollViewPager mViewPager;
     private TabLayout mTableLayout;
     private String[] titles = {"私信", "下载", "资讯", "视频", "我的", "帖子"};
-    private List<BaseFragment> mFragmentList = new ArrayList<>();
+    private List<Fragment> mFragmentList = new ArrayList<>();
     private RelativeLayout mRlTitle;
     private TextView mTvTitle;
     private int REQUEST_WRITE_EXTERNAL_STORAGE = 0;
@@ -148,7 +149,11 @@ public class MainActivity extends BaseActivity {
 
     private void initData() {
         DownFragment downFragment = new DownFragment();
-        mFragmentList.add(new IMFragment());
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(ConversationListFragment.EXTRA_SHOW_TITLE, false);
+        Fragment mFragment = Fragment.instantiate(this,
+                ConversationListFragment.class.getName(), bundle);
+        mFragmentList.add(mFragment);
         mFragmentList.add(downFragment);
         mFragmentList.add(new InfoFragment());
         mFragmentList.add(new VideoFragment());

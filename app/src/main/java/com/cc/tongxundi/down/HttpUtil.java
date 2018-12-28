@@ -15,15 +15,18 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -53,6 +56,9 @@ public class HttpUtil {
     private static final String PUSH_POST = BASE_URL + "api/post/create";
     private static final String POST_LIST = BASE_URL + "api/post/list?pageNo=";
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+    private static final MediaType MEDIA_TYPE_PNG = MediaType.parse("image/png");
+    public static final String UP_LOAD_FILE = BASE_URL + "api/image/upload";
+
     private Handler mHandler;
     private Gson mGson;
 
@@ -334,6 +340,44 @@ public class HttpUtil {
         });
     }
 
+    private void getDataAsynFromNet(final String url, final HttpResultCallback callBack) {
+        //1 构造Request
+        Request.Builder builder = new Request.Builder();
+        Request request = builder.get().url(url).build();
+        //2 将Request封装为Call
+        Call call = mOkHttpClient.newCall(request);
+        //3 执行Call
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+
+                try {
+                    final String responseMessage = response.message();
+                    String body = response.body().string();
+                    DebugLog.d(TAG, "onResponse : body " + body);
+                    if (response.code() == 200) {
+                        sendSuccResult(mGson.fromJson(body, callBack.mType), callBack);
+
+                    } else {
+                        Exception exception = new Exception(response.code() + ":" + responseMessage);
+                        //sendFailedStringCallback(response.request(), exception, resCallBack);
+                    }
+                } catch (IOException e) {
+                    //sendFailedStringCallback(response.request(), e, resCallBack);
+                } catch (com.google.gson.JsonParseException e) {//Json解析的错误
+                    // sendFailedStringCallback(response.request(), e, resCallBack);
+                }
+
+
+            }
+        });
+    }
+
     public void news(int pageNo, HttpNetCallBack callBack) {
         String news_url = NEWS_URL + pageNo;
         getDataAsynFromNet(news_url, callBack);
@@ -404,14 +448,16 @@ public class HttpUtil {
      * "status":true
      * }
      */
-    public void postCreate(String title, String content, String userId, List<String> thumbnails, String theme, HttpNetCallBack callBack) {
+    public void postCreate(String title, String content, String userId, List<String> thumbnails, String theme, HttpResultCallback callBack) {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.putOpt("title", title);
             jsonObject.putOpt("content", content);
             jsonObject.putOpt("userId", userId);
             JSONArray jsonArray = new JSONArray();
-            jsonArray.put(thumbnails);
+            for (String path : thumbnails) {
+                jsonArray.put(path);
+            }
             jsonObject.putOpt("thumbnails", jsonArray);
             jsonObject.putOpt("theme", theme);
         } catch (JSONException e) {
@@ -459,13 +505,49 @@ public class HttpUtil {
      * @param page
      */
 
-    public void getPostList(int page, HttpNetCallBack callBack) {
+    public void getPostList(int page, HttpResultCallback callBack) {
         String url = POST_LIST + page;
         getDataAsynFromNet(url, callBack);
 
     }
 
+
     public String getDownFileUrl(int id) {
         return DOWN_FILE + id;
+    }
+
+    public void uploadFile(List<String> list, final HttpResultCallback callBack) {
+        int i = 0;
+        // mImgUrls为存放图片的url集合
+        MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
+        // for (String path : list) {
+        File f = new File(list.get(0));
+        builder.addFormDataPart("image", f.getName(), RequestBody.create(MEDIA_TYPE_PNG, f));
+        // }
+        // 添加其它信息
+        final MultipartBody requestBody = builder.build();
+        // 构建请求
+        Request request = new Request.Builder()
+                .url(UP_LOAD_FILE)// 地址
+                .post(requestBody)// 添加请求体
+                .build();
+
+        mOkHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+                DebugLog.d(TAG, "  图片上传失败 ------");
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String re = response.body().string();
+                DebugLog.d(TAG, "  图片上传成功 ------" + re);
+
+                // System.out.println("上传照片成功：response = " + response.body().string());
+
+            }
+        });
+
     }
 }

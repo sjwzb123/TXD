@@ -5,6 +5,7 @@ import android.app.Application;
 import com.cc.tongxundi.db.DBHelper;
 import com.cc.tongxundi.im.IMManagerImpl;
 import com.yuntongxun.plugin.common.SDKCoreHelper;
+import com.yuntongxun.plugin.common.common.utils.LogUtil;
 import com.yuntongxun.plugin.greendao3.helper.DaoHelper;
 import com.yuntongxun.plugin.im.dao.helper.IMDao;
 import com.yuntongxun.plugin.im.manager.IMPluginManager;
@@ -14,7 +15,7 @@ public class TXDApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-      //  DBHelper.getInstance().setDatabase(getApplicationContext());
+        DBHelper.getInstance().setDatabase(getApplicationContext());
         initIM();
     }
 
@@ -23,6 +24,7 @@ public class TXDApp extends Application {
         SDKCoreHelper.setContext(this);
 //初始化数据库
         DaoHelper.init(this, new IMDao());
+        LogUtil.setDebugMode(true);
 
         /**
          * 推荐配置方式  同为链式调用，但创建统一的接口实现类，在实现类中配置接口的方法

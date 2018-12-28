@@ -89,27 +89,28 @@ public class LoginActivity extends BaseActivity {
         final String phone = mEtPhone.getText().toString();
         String code = mEtCode.getText().toString();
         final String addr = mEtAddr.getText().toString();
-        if (TextUtils.isEmpty(phone) || TextUtils.isEmpty(code) || TextUtils.isEmpty(addr)) {
-            Toast.makeText(this, "账号，验证码，地址不能为空", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        HttpUtil.getInstance().login(phone, code, addr, new HttpResultCallback<CommonResultBean<UserBean>>() {
-            @Override
-            public void onError(Request request, Exception e) {
-                mLoadView.dismiss();
-
-            }
-
-            @Override
-            public void onResponse(CommonResultBean<UserBean> response) {
-                UserBean userBean = response.getData();
-                UserDbHelper.getInstance().insertUser(userBean);
-                spManager.put(SPManager.KEY_UID, String.valueOf(userBean.getId()));
-                spManager.put(SPManager.KEY_IS_LOGIN, true);
-                DebugLog.d(TAG, userBean.toString());
-                loginIM(String.valueOf(userBean.getId()), "txd");
-            }
-        });
+//        if (TextUtils.isEmpty(phone) || TextUtils.isEmpty(code) || TextUtils.isEmpty(addr)) {
+//            Toast.makeText(this, "账号，验证码，地址不能为空", Toast.LENGTH_SHORT).show();
+//            return;
+//        }
+//        HttpUtil.getInstance().login(phone, code, addr, new HttpResultCallback<CommonResultBean<UserBean>>() {
+//            @Override
+//            public void onError(Request request, Exception e) {
+//                mLoadView.dismiss();
+//
+//            }
+//
+//            @Override
+//            public void onResponse(CommonResultBean<UserBean> response) {
+//                UserBean userBean = response.getData();
+//                UserDbHelper.getInstance().insertUser(userBean);
+//                spManager.put(SPManager.KEY_UID, String.valueOf(userBean.getId()));
+//                spManager.put(SPManager.KEY_IS_LOGIN, true);
+//                DebugLog.d(TAG, userBean.toString());
+//                loginIM(String.valueOf(userBean.getId()), "txd");
+//            }
+//        });
+        loginIM("im", "sjw");
 
     }
 
@@ -219,5 +220,11 @@ public class LoginActivity extends BaseActivity {
         });
 
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mSDKNotifyReceiver);
     }
 }

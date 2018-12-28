@@ -17,6 +17,15 @@ public class CommonResultBean<T> {
     private String code;
     private T data;
     private String msg;
+    private T content;
+
+    public T getContent() {
+        return content;
+    }
+
+    public void setContent(T content) {
+        this.content = content;
+    }
 
     public String getCode() {
         return code;

@@ -4,7 +4,7 @@ import java.util.List;
 
 public class CommonResultListBean<T> {
     private String code;
-    private List<T> data;
+    private List<T> content;
     private String message;
 
     public String getCode() {
@@ -15,12 +15,12 @@ public class CommonResultListBean<T> {
         this.code = code;
     }
 
-    public List<T> getData() {
-        return data;
+    public List<T> getContent() {
+        return content;
     }
 
-    public void setData(List<T> data) {
-        this.data = data;
+    public void setContent(List<T> content) {
+        this.content = content;
     }
 
     public String getMessage() {

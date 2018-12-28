@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/color_ffffff"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -10,14 +11,16 @@
         android:layout_height="50dp"
         android:background="@color/color_ffffff">
 
-        <ImageView
-            android:id="@+id/iv_share"
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/btn_push_post"
+            android:layout_width="30dp"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_marginTop="10dp"
-            android:src="@drawable/share"
-            android:visibility="gone" />
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:text="发表"
+            android:textColor="#2A8DFF"
+            android:textSize="15sp" />
 
         <TextView
             android:id="@+id/tv_title"
@@ -39,41 +42,121 @@
 
     </RelativeLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/color_EAEAEA"></View>
+
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="20dp"
         android:orientation="vertical">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="标题" />
-
-        <EditText
-            android:id="@+id/et_title"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:hint="亲输入标题" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="内容" />
 
         <EditText
             android:id="@+id/et_content"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:layout_marginTop="@dimen/dp_10"
-            android:hint="请输入内容" />
+            android:background="@null"
+            android:gravity="left"
+            android:hint="请输入帖子内容"
+            android:padding="8dp"
+            android:textColor="@color/color_ececec"
+            android:textSize="17sp" />
 
-        <Button
-            android:id="@+id/btn_push_post"
+        <LinearLayout
+            android:id="@+id/ll_img"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="发表" />
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/iv_add"
+                android:layout_width="62dp"
+                android:layout_height="62dp"
+                android:src="@drawable/button_img" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/color_EAEAEA"></View>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:text="选择主题"
+            android:textColor="@color/color_333333"
+            android:textSize="16sp" />
+
+        <RadioGroup
+            android:id="@+id/rg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/cb1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/cb_bg"
+                android:button="@null"
+                android:checked="true"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="主板"
+                android:textColor="@drawable/cb_tv_select"
+                android:textSize="14sp" />
+
+            <RadioButton
+                android:id="@+id/cb2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/cb_bg"
+                android:button="@null"
+                android:checked="true"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="压屏"
+                android:textColor="@drawable/cb_tv_select"
+                android:textSize="14sp" />
+
+            <RadioButton
+                android:id="@+id/cb3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/cb_bg"
+                android:button="@null"
+                android:checked="true"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="其他"
+                android:textColor="@drawable/cb_tv_select"
+                android:textSize="14sp" />
+
+            <RadioButton
+                android:id="@+id/cb4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/cb_bg"
+                android:button="@null"
+                android:checked="true"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="主板"
+                android:textColor="@drawable/cb_tv_select"
+                android:textSize="14sp" />
+        </RadioGroup>
+
 
     </LinearLayout>
 

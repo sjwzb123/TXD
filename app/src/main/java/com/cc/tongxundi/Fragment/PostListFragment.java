@@ -13,9 +13,18 @@ import com.cc.tongxundi.BaseFragment;
 import com.cc.tongxundi.PushPostActivity;
 import com.cc.tongxundi.R;
 import com.cc.tongxundi.adapter.PostAadapter;
+import com.cc.tongxundi.bean.PostBean;
+import com.cc.tongxundi.down.Http.CommonResultBean;
+import com.cc.tongxundi.down.Http.CommonResultListBean;
 import com.cc.tongxundi.down.Http.HttpNetCallBack;
+import com.cc.tongxundi.down.HttpResultCallback;
 import com.cc.tongxundi.down.HttpUtil;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.tencent.ijk.media.player.pragma.DebugLog;
+
+import java.util.List;
+
+import okhttp3.Request;
 
 public class PostListFragment extends BaseFragment {
     private RecyclerView mRv;
@@ -48,7 +57,7 @@ public class PostListFragment extends BaseFragment {
         mPostAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
             @Override
             public void onLoadMoreRequested() {
-               // getNetData();
+                // getNetData();
             }
         }, mRv);
         view.findViewById(R.id.btn_push_post).setOnClickListener(new View.OnClickListener() {
@@ -63,23 +72,27 @@ public class PostListFragment extends BaseFragment {
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser){
+        if (isVisibleToUser) {
             getNetData();
         }
     }
 
     private void getNetData() {
-        HttpUtil.getInstance().getPostList(pageno, new HttpNetCallBack() {
+        HttpUtil.getInstance().getPostList(pageno, new HttpResultCallback<CommonResultBean<PostBean>>() {
             @Override
-            public void onFailure(String errCode, String errMsg) {
+            public void onError(Request request, Exception e) {
 
             }
 
             @Override
-            public void onSucc(String response, int totalPages, int pageStart) {
-                pageno++;
+            public void onResponse(CommonResultBean<PostBean> response) {
+                for (int i = 0; i < response.getData().getContent().size(); i++) {
+                    DebugLog.d(TAG,response.getData().getContent().get(i).getThumbnailUrls().get(0));
+                }
 
             }
+
+
         });
     }
 }
