@@ -65,14 +65,10 @@
                 android:visibility="gone"/>
 
             <FrameLayout
+                android:id="@+id/fl_container"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <fragment
-                    android:id="@+id/comment_fragment"
-                    android:name="com.cc.tongxundi.Fragment.CommentFragment"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"></fragment>
             </FrameLayout>
         </LinearLayout>
     </LinearLayout>

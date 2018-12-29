@@ -51,19 +51,22 @@ public class PostListFragment extends BaseFragment {
 
     private void initView(View view) {
         mSrl = view.findViewById(R.id.srf_post);
+        mSrl.setEnabled(true);
         mRv = view.findViewById(R.id.rv_post);
         mPostAdapter = new PostAadapter(getContext());
+        mRv.setAdapter(mPostAdapter);
         mRv.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         mPostAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
             @Override
             public void onLoadMoreRequested() {
-                // getNetData();
+                 getNetData(false);
             }
         }, mRv);
-        view.findViewById(R.id.btn_push_post).setOnClickListener(new View.OnClickListener() {
+
+        mSrl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void onClick(View view) {
-                PushPostActivity.startActivity(getContext());
+            public void onRefresh() {
+                getNetData(true);
             }
         });
 
@@ -73,11 +76,11 @@ public class PostListFragment extends BaseFragment {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser) {
-            getNetData();
+            getNetData(false);
         }
     }
 
-    private void getNetData() {
+    private void getNetData(final boolean isFresh) {
         HttpUtil.getInstance().getPostList(pageno, new HttpResultCallback<CommonResultBean<PostBean>>() {
             @Override
             public void onError(Request request, Exception e) {
@@ -86,9 +89,14 @@ public class PostListFragment extends BaseFragment {
 
             @Override
             public void onResponse(CommonResultBean<PostBean> response) {
-                for (int i = 0; i < response.getData().getContent().size(); i++) {
-                    DebugLog.d(TAG,response.getData().getContent().get(i).getThumbnailUrls().get(0));
+                pageno++;
+                if (isFresh){
+                    mSrl.setEnabled(false);
+                    mPostAdapter.refeData(response.getData().getContent());
+                }else {
+                    mPostAdapter.loadMore(response.getData().getContent());
                 }
+
 
             }
 

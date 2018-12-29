@@ -6,12 +6,6 @@
     android:background="@color/color_ffffff"
     android:orientation="vertical">
 
-    <Button
-        android:id="@+id/btn_push_post"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="发表帖子" />
-
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/srf_post"
         android:layout_width="match_parent"
@@ -22,26 +16,5 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
     </android.support.v4.widget.SwipeRefreshLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_alignParentBottom="true"
-        android:orientation="horizontal">
-
-        <EditText
-            android:id="@+id/et_post"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="8" />
-
-        <Button
-            android:id="@+id/btn_post"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:text="发表" />
-
-    </LinearLayout>
 
 </RelativeLayout>

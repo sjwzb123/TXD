@@ -80,6 +80,12 @@ public class PushPostActivity extends BaseActivity {
                 title = rb.getText().toString();
             }
         });
+        findViewById(R.id.iv_back).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
 
 
     }

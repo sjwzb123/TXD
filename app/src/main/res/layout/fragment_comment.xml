@@ -9,7 +9,8 @@
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/srf_comment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:paddingBottom="55dp">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_comment"
@@ -21,20 +22,32 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
 
         <EditText
             android:id="@+id/et_comm"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="8" />
+            android:layout_weight="8"
+            android:background="@drawable/et_boder_bg"
+            android:hint="请输入评论"
+            android:paddingLeft="30dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp" />
+
 
         <Button
             android:id="@+id/btn_push"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
             android:layout_weight="2"
-            android:text="发表" />
+            android:background="@drawable/btn_boder_bg"
+            android:text="发表"
+            android:textColor="@color/color_ffffff"
+            android:textSize="13sp" />
 
     </LinearLayout>
 

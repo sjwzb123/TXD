@@ -1,5 +1,7 @@
 package com.cc.tongxundi.bean;
 
+import java.util.List;
+
 public class CommentBean extends BaseBean {
    /**
     * "content": "这个内容不错5",
@@ -15,95 +17,109 @@ public class CommentBean extends BaseBean {
     *
     *
     * */
+   private List<content> content;
 
-   private String content;
-   private long createTime;
-   private int groupId;
-   private int groupType;
-   private  int id ;
-   private String nickname;
-   private int replyId;
-   private int replyUserId;
-   private String replyUserNickname;
-   private int userId;
-
-    public String getContent() {
+    public List<CommentBean.content> getContent() {
         return content;
     }
 
-    public void setContent(String content) {
+    public void setContent(List<CommentBean.content> content) {
         this.content = content;
     }
 
-    public long getCreateTime() {
-        return createTime;
-    }
+    public class content{
+       private String content;
+       private long createTime;
+       private int groupId;
+       private int groupType;
+       private  int id ;
+       private String nickname;
+       private int replyId;
+       private int replyUserId;
+       private String replyUserNickname;
+       private int userId;
 
-    public void setCreateTime(long createTime) {
-        this.createTime = createTime;
-    }
+       public String getContent() {
+           return content;
+       }
 
-    public int getGroupId() {
-        return groupId;
-    }
+       public void setContent(String content) {
+           this.content = content;
+       }
 
-    public void setGroupId(int groupId) {
-        this.groupId = groupId;
-    }
+       public long getCreateTime() {
+           return createTime;
+       }
 
-    public int getGroupType() {
-        return groupType;
-    }
+       public void setCreateTime(long createTime) {
+           this.createTime = createTime;
+       }
 
-    public void setGroupType(int groupType) {
-        this.groupType = groupType;
-    }
+       public int getGroupId() {
+           return groupId;
+       }
 
-    public int getId() {
-        return id;
-    }
+       public void setGroupId(int groupId) {
+           this.groupId = groupId;
+       }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+       public int getGroupType() {
+           return groupType;
+       }
 
-    public String getNickname() {
-        return nickname;
-    }
+       public void setGroupType(int groupType) {
+           this.groupType = groupType;
+       }
 
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
+       public int getId() {
+           return id;
+       }
 
-    public int getReplyId() {
-        return replyId;
-    }
+       public void setId(int id) {
+           this.id = id;
+       }
 
-    public void setReplyId(int replyId) {
-        this.replyId = replyId;
-    }
+       public String getNickname() {
+           return nickname;
+       }
 
-    public int getReplyUserId() {
-        return replyUserId;
-    }
+       public void setNickname(String nickname) {
+           this.nickname = nickname;
+       }
 
-    public void setReplyUserId(int replyUserId) {
-        this.replyUserId = replyUserId;
-    }
+       public int getReplyId() {
+           return replyId;
+       }
 
-    public String getReplyUserNickname() {
-        return replyUserNickname;
-    }
+       public void setReplyId(int replyId) {
+           this.replyId = replyId;
+       }
 
-    public void setReplyUserNickname(String replyUserNickname) {
-        this.replyUserNickname = replyUserNickname;
-    }
+       public int getReplyUserId() {
+           return replyUserId;
+       }
 
-    public int getUserId() {
-        return userId;
-    }
+       public void setReplyUserId(int replyUserId) {
+           this.replyUserId = replyUserId;
+       }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
+       public String getReplyUserNickname() {
+           return replyUserNickname;
+       }
+
+       public void setReplyUserNickname(String replyUserNickname) {
+           this.replyUserNickname = replyUserNickname;
+       }
+
+       public int getUserId() {
+           return userId;
+       }
+
+       public void setUserId(int userId) {
+           this.userId = userId;
+       }
+
+   }
+
+
 }

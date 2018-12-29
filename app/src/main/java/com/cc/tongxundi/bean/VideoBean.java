@@ -3,10 +3,19 @@ package com.cc.tongxundi.bean;
 import java.io.Serializable;
 
 public class VideoBean implements Serializable {
+    private int id;
     private String description;
     private String contentUrl;
     private int duration;
     private String thumbnailUrl;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getDescription() {
         return description;

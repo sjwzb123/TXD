@@ -22,19 +22,26 @@
             android:textSize="14sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="dd"
+            android:text=""
             android:layout_toRightOf="@id/iv_user"
             android:id="@+id/tv_user_name"/>
         <TextView
             android:textColor="#4a4a4a"
             android:id="@+id/tv_time"
             android:textSize="13sp"
-            android:text="dd"
-            android:layout_toRightOf="@id/iv_user"
+            android:layout_alignRight="@id/iv_user"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"/>
-
+        <TextView
+            android:textSize="15sp"
+            android:textColor="@color/color_2A8DFF"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_im"
+            android:text="私信"/>
 
     </RelativeLayout>
     <TextView
@@ -44,6 +51,13 @@
         android:textColor="@color/color_393939"
         android:textSize="16sp"
         android:id="@+id/tv_content"/>
+    <LinearLayout
+        android:id="@+id/ll_iv"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </LinearLayout>
 
 
 </LinearLayout>

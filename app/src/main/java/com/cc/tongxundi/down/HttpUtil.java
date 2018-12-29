@@ -343,13 +343,21 @@ public class HttpUtil {
     private void getDataAsynFromNet(final String url, final HttpResultCallback callBack) {
         //1 构造Request
         Request.Builder builder = new Request.Builder();
-        Request request = builder.get().url(url).build();
+        final Request request = builder.get().url(url).build();
         //2 将Request封装为Call
         Call call = mOkHttpClient.newCall(request);
         //3 执行Call
         call.enqueue(new Callback() {
             @Override
-            public void onFailure(Call call, IOException e) {
+            public void onFailure(Call call, final IOException e) {
+                if (callBack!=null)
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            callBack.onError(request,e);
+                        }
+                    });
+
 
             }
 
@@ -393,13 +401,13 @@ public class HttpUtil {
         getDataAsynFromNet(news_url, callBack);
     }
 
-    public void getCommentList(int pageNo, int roupType, int groupId, HttpNetCallBack callBack) {
-        String url = COMMENTLIST + pageNo + "&roupType=" + roupType + "&groupId=" + groupId;
+    public void getCommentList(int pageNo, int roupType, int groupId, HttpResultCallback callBack) {
+        String url = COMMENTLIST + pageNo + "&groupType=" + roupType + "&groupId=" + groupId;
         getDataAsynFromNet(url, callBack);
 
     }
 
-    public void pushComment(String content, int groupType, int groupId, String replyId, String replyUserId, HttpNetCallBack callBack) {
+    public void pushComment(String userId,String content, int groupType, int groupId, String replyId, String replyUserId, HttpResultCallback callBack) {
         /**
          * 评论 /api/comment/create POST
          *    参数：
@@ -419,6 +427,7 @@ public class HttpUtil {
          */
         JSONObject jsonObject = new JSONObject();
         try {
+            jsonObject.putOpt("userId",userId);
             jsonObject.putOpt("content", content);
             jsonObject.putOpt("groupType", groupType);
             jsonObject.putOpt("groupId", groupId);

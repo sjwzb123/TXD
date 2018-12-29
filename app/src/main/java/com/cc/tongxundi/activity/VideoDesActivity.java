@@ -39,6 +39,7 @@ public class VideoDesActivity extends BaseActivity {
     private String newsTitle;
     private View shareView;
     private CommentFragment mCommentFragment;
+    private int groupType = 1;
 
     public static void startActivity(Context context, VideoBean videoBean) {
         Intent intent = new Intent(context, VideoDesActivity.class);
@@ -95,7 +96,6 @@ public class VideoDesActivity extends BaseActivity {
                 onBackPressed();
             }
         });
-        mCommentFragment= (CommentFragment) getSupportFragmentManager().findFragmentById(R.id.comment_fragment);
         initData();
 
     }
@@ -109,6 +109,8 @@ public class VideoDesActivity extends BaseActivity {
         mVideoBean = (VideoBean) getIntent().getSerializableExtra(VIDEO_KEY);
         Glide.with(mContext).load(mVideoBean.getThumbnailUrl()).into(mPlayView.getVideoCover());
         mTvDes.setText(mVideoBean.getDescription());
+        mCommentFragment = CommentFragment.newInstance(groupType, mVideoBean.getId());
+        getSupportFragmentManager().beginTransaction().add(R.id.fl_container, mCommentFragment).commit();
     }
 
     @Override
