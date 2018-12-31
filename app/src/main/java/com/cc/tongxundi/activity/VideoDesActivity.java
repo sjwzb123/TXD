@@ -109,7 +109,7 @@ public class VideoDesActivity extends BaseActivity {
         mVideoBean = (VideoBean) getIntent().getSerializableExtra(VIDEO_KEY);
         Glide.with(mContext).load(mVideoBean.getThumbnailUrl()).into(mPlayView.getVideoCover());
         mTvDes.setText(mVideoBean.getDescription());
-        mCommentFragment = CommentFragment.newInstance(groupType, mVideoBean.getId());
+        mCommentFragment = CommentFragment.newInstance(groupType, String.valueOf(mVideoBean.getId()));
         getSupportFragmentManager().beginTransaction().add(R.id.fl_container, mCommentFragment).commit();
     }
 

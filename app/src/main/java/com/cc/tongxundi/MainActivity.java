@@ -31,6 +31,9 @@ import com.tencent.ijk.media.player.pragma.DebugLog;
 import com.yuntongxun.ecsdk.ECDevice;
 import com.yuntongxun.ecsdk.ECError;
 import com.yuntongxun.ecsdk.SdkErrorCode;
+import com.yuntongxun.plugin.common.AppMgr;
+import com.yuntongxun.plugin.common.SDKCoreHelper;
+import com.yuntongxun.plugin.common.common.utils.LogUtil;
 import com.yuntongxun.plugin.im.ui.chatting.fragment.ConversationListFragment;
 
 import java.util.ArrayList;
@@ -45,11 +48,12 @@ public class MainActivity extends BaseActivity {
     private MyAdapter mAdapter;
     private NoScrollViewPager mViewPager;
     private TabLayout mTableLayout;
-    private String[] titles = {"私信", "下载", "资讯", "视频", "我的", "帖子"};
+    private String[] titles = {"私信","下载", "视频",  "帖子", "我的"};
     private List<Fragment> mFragmentList = new ArrayList<>();
     private RelativeLayout mRlTitle;
     private TextView mTvTitle;
     private int REQUEST_WRITE_EXTERNAL_STORAGE = 0;
+    private View rightView;
     private String TAG = "MainActivity";
 
     public static void startActivity(Context context) {
@@ -60,29 +64,10 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        IMHelper.getInstance().initIMSDK(this, new IMListener() {
-            @Override
-            public void onInitialized() {
-                super.onInitialized();
-                String userId = (String) spManager.getSharedPreference(SPManager.KEY_UID, "");
-                IMHelper.getInstance().login(userId, this);
-            }
-
-            @Override
-            public void onConnectState(ECDevice.ECConnectState state, ECError error) {
-                super.onConnectState(state, error);
-                if (state == ECDevice.ECConnectState.CONNECT_FAILED) {
-                    if (error.errorCode == SdkErrorCode.SDK_KICKED_OFF) {
-                        DebugLog.d(TAG, "==帐号异地登陆");
-                    } else {
-                        DebugLog.d(TAG, "==其他登录失败,错误码：" + error.errorCode+" err "+error.toString());
-                    }
-                    return;
-                } else if (state == ECDevice.ECConnectState.CONNECT_SUCCESS) {
-                    DebugLog.i(TAG, "==登陆成功");
-                }
-            }
-        });
+        if (AppMgr.getClientUser() != null) {
+            LogUtil.d(TAG, "SDK auto connect...");
+            SDKCoreHelper.init(getApplicationContext());
+        }
 
     }
 
@@ -97,23 +82,29 @@ public class MainActivity extends BaseActivity {
         mAdapter = new MyAdapter(getSupportFragmentManager());
         mViewPager = (NoScrollViewPager) findViewById(R.id.main_viewpager);
         mViewPager.setNoScroll(true);
-        mViewPager.setOffscreenPageLimit(3);
+        mViewPager.setOffscreenPageLimit(titles.length - 1);
         mViewPager.setAdapter(mAdapter);
         mTableLayout = (TabLayout) findViewById(R.id.main_tab);
         mTableLayout.setupWithViewPager(mViewPager);
         mTableLayout.setTabMode(TabLayout.MODE_FIXED);
-        mTableLayout.getTabAt(0).setIcon(R.drawable.ic_launcher);
+        mTableLayout.getTabAt(0).setIcon(R.drawable.msg_bg);
         mTableLayout.getTabAt(1).setIcon(R.drawable.down_bg);
-        mTableLayout.getTabAt(2).setIcon(R.drawable.info_bg);
-        mTableLayout.getTabAt(3).setIcon(R.drawable.video_bg);
+        mTableLayout.getTabAt(2).setIcon(R.drawable.video_bg);
+
+        mTableLayout.getTabAt(3).setIcon(R.drawable.info_bg);
         mTableLayout.getTabAt(4).setIcon(R.drawable.user_bg);
-        mTableLayout.getTabAt(5).setIcon(R.drawable.ic_launcher);
+
         mRlTitle = (RelativeLayout) findViewById(R.id.rl_title);
         mTvTitle = (TextView) findViewById(R.id.tv_title);
         mTableLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 mTvTitle.setText(tab.getText().toString());
+                if (tab.getText().toString().equals("帖子")) {
+                    rightView.setVisibility(View.VISIBLE);
+                } else {
+                    rightView.setVisibility(View.GONE);
+                }
             }
 
             @Override
@@ -144,6 +135,13 @@ public class MainActivity extends BaseActivity {
 
             }
         });
+        rightView = findViewById(R.id.iv_add);
+        rightView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PushPostActivity.startActivity(mContext);
+            }
+        });
 
     }
 
@@ -151,14 +149,13 @@ public class MainActivity extends BaseActivity {
         DownFragment downFragment = new DownFragment();
         Bundle bundle = new Bundle();
         bundle.putBoolean(ConversationListFragment.EXTRA_SHOW_TITLE, false);
-        Fragment mFragment = Fragment.instantiate(this,
+        Fragment msgFragment = Fragment.instantiate(this,
                 ConversationListFragment.class.getName(), bundle);
-        mFragmentList.add(mFragment);
+        mFragmentList.add(msgFragment);
         mFragmentList.add(downFragment);
-        mFragmentList.add(new InfoFragment());
         mFragmentList.add(new VideoFragment());
-        mFragmentList.add(new SetFragment());
         mFragmentList.add(new PostListFragment());
+        mFragmentList.add(new SetFragment());
 //        ActionFragment actionFragment = new ActionFragment();
 //        mFragmentList.add(actionFragment);
 //        InforFragment inforFragment = new InforFragment();

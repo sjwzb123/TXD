@@ -1,5 +1,8 @@
 package com.cc.tongxundi.bean;
 
+import android.text.TextUtils;
+
+import java.io.Serializable;
 import java.util.List;
 
 public class PostBean extends BaseBean {
@@ -39,7 +42,7 @@ public class PostBean extends BaseBean {
         this.content = content;
     }
 
-    public class content {
+    public class content implements Serializable {
         private String content;
         private String id;
         private String nickname;
@@ -50,6 +53,8 @@ public class PostBean extends BaseBean {
         private long createTime;
 
         public String getContent() {
+            if (TextUtils.isEmpty(content))
+                content="新年快乐,happy new  year ! 通讯帝祝大家新年快乐 ";
             return content;
         }
 

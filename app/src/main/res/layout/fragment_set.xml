@@ -1,97 +1,181 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/color_ffffff"
-    android:orientation="vertical"
-    android:paddingLeft="10dp">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/tv_user"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/color_333333"
-        android:textSize="18sp" />
 
-    <TextView
-        android:id="@+id/tv_addr"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:textColor="@color/color_999999"
-        android:textSize="14sp" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="30dp"
-        android:background="@color/color_EAEAEA"></View>
-
-    <RelativeLayout
-        android:id="@+id/rl_update"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:paddingRight="10dp">
+        android:layout_height="match_parent"
+        android:background="@color/color_ffffff"
+        android:orientation="vertical"
+        android:paddingLeft="10dp">
 
         <TextView
-
-            android:layout_width="wrap_content"
+            android:id="@+id/tv_user"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:text="版本升级2.0"
             android:textColor="@color/color_333333"
-            android:textSize="16sp" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:src="@drawable/icon_arrow" />
-    </RelativeLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/color_EAEAEA"></View>
-
-    <RelativeLayout
-        android:id="@+id/rl_clean"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:paddingRight="10dp">
+            android:textSize="18sp" />
 
         <TextView
-
-            android:layout_width="wrap_content"
+            android:id="@+id/tv_addr"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:text="清除缓存"
-            android:textColor="@color/color_333333"
-            android:textSize="16sp" />
+            android:layout_marginTop="20dp"
+            android:textColor="@color/color_999999"
+            android:textSize="14sp" />
 
-        <ImageView
-            android:layout_width="wrap_content"
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="30dp"
+            android:background="@color/color_EAEAEA"></View>
+
+
+        <RelativeLayout
+            android:id="@+id/rl_share"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:paddingRight="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="邀请好友"
+                android:textColor="@color/color_333333"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/icon_arrow" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/color_EAEAEA"></View>
+
+        <RelativeLayout
+            android:id="@+id/rl_update"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:paddingRight="10dp">
+
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="版本升级2.0"
+                android:textColor="@color/color_333333"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/icon_arrow" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/color_EAEAEA"></View>
+
+        <RelativeLayout
+            android:id="@+id/rl_clean"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:paddingRight="10dp">
+
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="清除缓存"
+                android:textColor="@color/color_333333"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/icon_arrow" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/color_EAEAEA"></View>
+
+        <Button
+            android:id="@+id/btn_login_out"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/down_btn_bg"
+            android:text="退出登录"
+            android:textColor="@color/color_ffffff"
+            android:textSize="15sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_share"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:background="@color/color_ffffff"
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:src="@drawable/icon_arrow" />
-    </RelativeLayout>
+            android:gravity="center"
+            android:orientation="horizontal">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/color_EAEAEA"></View>
+            <ImageView
+                android:id="@+id/iv_weixin"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginRight="10dp"
+                android:src="@drawable/wc" />
 
-    <Button
-        android:id="@+id/btn_login_out"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="50dp"
-        android:background="@drawable/down_btn_bg"
-        android:text="退出登录"
-        android:textColor="@color/color_ffffff"
-        android:textSize="15sp" />
-</LinearLayout>
+            <ImageView
+                android:id="@+id/iv_weixin_m"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="10dp"
+                android:src="@drawable/wf" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/color_e3e3e3"></View>
+
+        <TextView
+            android:id="@+id/iv_cancle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:text="取消"
+            android:textColor="@color/color_151515"
+            android:textSize="15sp" />
+    </LinearLayout>
+</RelativeLayout>

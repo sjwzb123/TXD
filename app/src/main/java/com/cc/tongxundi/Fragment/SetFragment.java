@@ -1,19 +1,30 @@
 package com.cc.tongxundi.Fragment;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cc.tongxundi.BaseFragment;
 import com.cc.tongxundi.R;
+import com.cc.tongxundi.WXUitls;
 import com.cc.tongxundi.activity.LoginActivity;
 import com.cc.tongxundi.utils.SPManager;
+import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
+import com.tencent.mm.opensdk.modelmsg.WXMediaMessage;
+import com.tencent.mm.opensdk.modelmsg.WXWebpageObject;
+import com.tencent.mm.opensdk.openapi.IWXAPI;
+import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
 
 public class SetFragment extends BaseFragment {
@@ -23,6 +34,7 @@ public class SetFragment extends BaseFragment {
     private RelativeLayout mRlUpdate;
     private RelativeLayout mRLClean;
     private Button mBtnOut;
+    private String APP_ID = "wxec02cb34c2afe420";
 
     @Nullable
     @Override
@@ -66,6 +78,12 @@ public class SetFragment extends BaseFragment {
                 LoginActivity.startActivity(getContext());
             }
         });
+        view.findViewById(R.id.rl_share).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
         initData();
     }
 
@@ -76,5 +94,61 @@ public class SetFragment extends BaseFragment {
         mTvPhone.setText("用户" + phone);
         mTvAddr.setText(addr);
 
+    }
+    private IWXAPI api;
+    private LinearLayout llShare;
+    private View shareView;
+    private View ivChat;
+    private View ivF;
+    private void initShare(View view){
+        api = WXAPIFactory.createWXAPI(getContext(), APP_ID);
+        llShare = (LinearLayout) view.findViewById(R.id.ll_share);
+        shareView = view.findViewById(R.id.iv_share);
+        ivChat = (ImageView) view.findViewById(R.id.iv_weixin);
+        ivF = (ImageView)view .findViewById(R.id.iv_weixin_m);
+        ivChat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                shareToWxinChat(SendMessageToWX.Req.WXSceneSession);
+                llShare.setVisibility(View.GONE);
+            }
+        });
+        ivF.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                shareToWxinChat(SendMessageToWX.Req.WXSceneTimeline);
+                llShare.setVisibility(View.GONE);
+            }
+        });
+        view.findViewById(R.id.iv_cancle).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                llShare.setVisibility(View.GONE);
+            }
+        });
+    }
+    private void shareToWxinChat(int targetScene) {
+        String shareUrl="https://a.app.qq.com/o/simple.jsp?pkgname=com.cc.tongxundi&fromcase=40003";
+        WXWebpageObject webpage = new WXWebpageObject();
+        webpage.webpageUrl =shareUrl;
+        WXMediaMessage msg = new WXMediaMessage(webpage);
+        msg.title = "通讯帝";
+        msg.description = "大家快来用";
+
+        Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
+        // Bitmap thumbBmp = Bitmap.createScaledBitmap(bmp, THUMB_SIZE, THUMB_SIZE, true);
+        // bmp.recycle();
+        msg.thumbData = WXUitls.bmpToByteArray(bmp, true);
+
+        SendMessageToWX.Req req = new SendMessageToWX.Req();
+
+        req.transaction = buildTransaction("webpage");
+        req.message = msg;
+        req.scene = targetScene;
+        api.sendReq(req);
+    }
+
+    private String buildTransaction(final String type) {
+        return (type == null) ? String.valueOf(System.currentTimeMillis()) : type + System.currentTimeMillis();
     }
 }

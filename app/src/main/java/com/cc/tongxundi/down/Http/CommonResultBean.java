@@ -4,28 +4,39 @@ public class CommonResultBean<T> {
 
     /**
      * {
-     * 	"msg": "登陆成功",
-     * 	"data": {
-     * 		"createTime": 1539747998000,
-     * 		"id": 2,
-     * 		"loginName": "13164232910",
-     * 		"phone": "13164232910"
-     *        },
-     * 	"status": true
+     * "msg": "登陆成功",
+     * "data": {
+     * "createTime": 1539747998000,
+     * "id": 2,
+     * "loginName": "13164232910",
+     * "phone": "13164232910"
+     * },
+     * "status": true
      * }
      */
     private String code;
     private T data;
     private String msg;
-    private T content;
+    private boolean status;
+    private int totalPages;
 
-    public T getContent() {
-        return content;
+    public int getTotalPages() {
+        return totalPages;
     }
 
-    public void setContent(T content) {
-        this.content = content;
+    public void setTotalPages(int totalPages) {
+        this.totalPages = totalPages;
     }
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
+
+
 
     public String getCode() {
         return code;

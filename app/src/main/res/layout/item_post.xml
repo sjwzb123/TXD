@@ -4,59 +4,72 @@
     android:layout_height="wrap_content"
     android:background="@color/color_ffffff"
     android:orientation="vertical"
-    android:padding="5dp">
+    android:padding="10dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:paddingRight="10dp"
-        android:layout_height="35dp">
-        <ImageView
+        android:layout_height="35dp"
+        android:paddingRight="10dp">
 
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/iv_user"
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:src="@drawable/ic_launcher" />
 
         <TextView
+            android:id="@+id/tv_user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@id/iv_user"
+            android:text="dd"
             android:textColor="@color/color_393939"
-            android:textSize="14sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="dd"
-            android:layout_toRightOf="@id/iv_user"
-            android:id="@+id/tv_user_name"/>
+            android:textSize="14sp" />
+
         <TextView
-            android:textColor="#4a4a4a"
             android:id="@+id/tv_time"
-            android:textSize="13sp"
-            android:text="dd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="10dp"
             android:layout_toRightOf="@id/iv_user"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"/>
+            android:text="dd"
+            android:textColor="@color/color_a4a4a4"
+            android:textSize="13sp" />
+
         <TextView
-            android:textSize="15sp"
-            android:textColor="@color/color_2A8DFF"
-            android:layout_alignParentRight="true"
-            android:layout_width="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_height="wrap_content"
             android:id="@+id/tv_im"
-            android:text="私信"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/tv_boder_bg"
+            android:drawableLeft="@drawable/im_icon"
+            android:drawablePadding="5dp"
+            android:gravity="center"
+            android:padding="8dp"
+            android:text="私信"
+            android:textColor="@color/color_2A8DFF"
+            android:textSize="15sp" />
 
     </RelativeLayout>
+
     <TextView
+        android:id="@+id/tv_content"
+
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text=""
+        android:layout_marginTop="10dp"
+        android:text="d ffff"
         android:textColor="@color/color_393939"
-        android:textSize="16sp"
-        android:id="@+id/tv_content"/>
+        android:textSize="16sp" />
+
     <LinearLayout
         android:id="@+id/ll_iv"
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
     </LinearLayout>
 

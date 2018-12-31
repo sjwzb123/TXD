@@ -15,12 +15,25 @@ public class UserBean extends BaseBean{
     private long createTime;
     private int id;
     private String phone;
+    private String nickname;
+    private String address;
 
-    @Generated(hash = 2060111914)
-    public UserBean(long createTime, int id, String phone) {
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    @Generated(hash = 68891431)
+    public UserBean(long createTime, int id, String phone, String nickname,
+            String address) {
         this.createTime = createTime;
         this.id = id;
         this.phone = phone;
+        this.nickname = nickname;
+        this.address = address;
     }
 
     @Generated(hash = 1203313951)
@@ -60,5 +73,11 @@ public class UserBean extends BaseBean{
                 '}';
     }
 
+    public String getNickname() {
+        return nickname;
+    }
 
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
 }

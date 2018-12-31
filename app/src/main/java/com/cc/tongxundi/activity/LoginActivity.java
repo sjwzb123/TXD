@@ -49,6 +49,7 @@ public class LoginActivity extends BaseActivity {
     private Button mBtnCode;
     private SPManager spManager;
     private String TAG = "LoginActivity";
+    private UserBean mUserBean;
 
     public static void startActivity(Context context) {
         Intent intent = new Intent(context, LoginActivity.class);
@@ -85,32 +86,39 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void login() {
+        //127051
         mLoadView.show();
         final String phone = mEtPhone.getText().toString();
         String code = mEtCode.getText().toString();
         final String addr = mEtAddr.getText().toString();
-//        if (TextUtils.isEmpty(phone) || TextUtils.isEmpty(code) || TextUtils.isEmpty(addr)) {
-//            Toast.makeText(this, "账号，验证码，地址不能为空", Toast.LENGTH_SHORT).show();
-//            return;
-//        }
-//        HttpUtil.getInstance().login(phone, code, addr, new HttpResultCallback<CommonResultBean<UserBean>>() {
-//            @Override
-//            public void onError(Request request, Exception e) {
-//                mLoadView.dismiss();
-//
-//            }
-//
-//            @Override
-//            public void onResponse(CommonResultBean<UserBean> response) {
-//                UserBean userBean = response.getData();
-//                UserDbHelper.getInstance().insertUser(userBean);
-//                spManager.put(SPManager.KEY_UID, String.valueOf(userBean.getId()));
-//                spManager.put(SPManager.KEY_IS_LOGIN, true);
-//                DebugLog.d(TAG, userBean.toString());
-//                loginIM(String.valueOf(userBean.getId()), "txd");
-//            }
-//        });
-        loginIM("im", "sjw");
+        if (TextUtils.isEmpty(phone) || TextUtils.isEmpty(code) || TextUtils.isEmpty(addr)) {
+            Toast.makeText(this, "账号，验证码，地址不能为空", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        HttpUtil.getInstance().login(phone, code, addr, new HttpResultCallback<CommonResultBean<UserBean>>() {
+            @Override
+            public void onError(Request request, Exception e) {
+                mLoadView.dismiss();
+
+            }
+
+            @Override
+            public void onResponse(CommonResultBean<UserBean> response) {
+                if (response.isStatus()){
+                    //127051
+                    mUserBean = response.getData();
+                    // UserDbHelper.getInstance().insertUser(userBean);
+                    // DebugLog.d(TAG, mUserBean.toString());
+                    String nickname=TextUtils.isEmpty(mUserBean.getNickname())?"用户000"+mUserBean.getId():mUserBean.getNickname();
+                    loginIM(String.valueOf(mUserBean.getId()), nickname);
+                }else {
+                    mLoadView.dismiss();
+                    ToastUtil.showMessage(response.getMsg());
+                }
+
+            }
+        });
+
 
     }
 
@@ -120,7 +128,6 @@ public class LoginActivity extends BaseActivity {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(SDKCoreHelper.ACTION_SDK_CONNECT);
         registerReceiver(mSDKNotifyReceiver, intentFilter);
-
         if (AppMgr.getClientUser() != null) {
             LogUtil.d(TAG, "SDK auto connect...");
             SDKCoreHelper.init(getApplicationContext());
@@ -159,6 +166,10 @@ public class LoginActivity extends BaseActivity {
                         // 上报华为/小米推送设备token
                         ECDevice.reportHuaWeiToken(pushToken);
                     }
+                    spManager.put(SPManager.KEY_UID, String.valueOf(mUserBean.getId()));
+                    spManager.put(SPManager.KEY_IS_LOGIN, true);
+                    spManager.put(SPManager.KEY_ADDR,mUserBean.getAddress());
+                    spManager.put(SPManager.KEY_PHONE,mUserBean.getPhone());
                     // 初始化IM数据库
                     DaoHelper.init(LoginActivity.this, new IMDao());
                     Intent action = new Intent(LoginActivity.this, MainActivity.class);

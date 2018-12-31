@@ -27,6 +27,8 @@ public class UserBeanDao extends AbstractDao<UserBean, Void> {
         public final static Property CreateTime = new Property(0, long.class, "createTime", false, "CREATE_TIME");
         public final static Property Id = new Property(1, int.class, "id", false, "ID");
         public final static Property Phone = new Property(2, String.class, "phone", false, "PHONE");
+        public final static Property Nickname = new Property(3, String.class, "nickname", false, "NICKNAME");
+        public final static Property Address = new Property(4, String.class, "address", false, "ADDRESS");
     }
 
 
@@ -44,7 +46,9 @@ public class UserBeanDao extends AbstractDao<UserBean, Void> {
         db.execSQL("CREATE TABLE " + constraint + "\"USER_BEAN\" (" + //
                 "\"CREATE_TIME\" INTEGER NOT NULL ," + // 0: createTime
                 "\"ID\" INTEGER NOT NULL ," + // 1: id
-                "\"PHONE\" TEXT);"); // 2: phone
+                "\"PHONE\" TEXT," + // 2: phone
+                "\"NICKNAME\" TEXT," + // 3: nickname
+                "\"ADDRESS\" TEXT);"); // 4: address
     }
 
     /** Drops the underlying database table. */
@@ -63,6 +67,16 @@ public class UserBeanDao extends AbstractDao<UserBean, Void> {
         if (phone != null) {
             stmt.bindString(3, phone);
         }
+ 
+        String nickname = entity.getNickname();
+        if (nickname != null) {
+            stmt.bindString(4, nickname);
+        }
+ 
+        String address = entity.getAddress();
+        if (address != null) {
+            stmt.bindString(5, address);
+        }
     }
 
     @Override
@@ -74,6 +88,16 @@ public class UserBeanDao extends AbstractDao<UserBean, Void> {
         String phone = entity.getPhone();
         if (phone != null) {
             stmt.bindString(3, phone);
+        }
+ 
+        String nickname = entity.getNickname();
+        if (nickname != null) {
+            stmt.bindString(4, nickname);
+        }
+ 
+        String address = entity.getAddress();
+        if (address != null) {
+            stmt.bindString(5, address);
         }
     }
 
@@ -87,7 +111,9 @@ public class UserBeanDao extends AbstractDao<UserBean, Void> {
         UserBean entity = new UserBean( //
             cursor.getLong(offset + 0), // createTime
             cursor.getInt(offset + 1), // id
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2) // phone
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // phone
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // nickname
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4) // address
         );
         return entity;
     }
@@ -97,6 +123,8 @@ public class UserBeanDao extends AbstractDao<UserBean, Void> {
         entity.setCreateTime(cursor.getLong(offset + 0));
         entity.setId(cursor.getInt(offset + 1));
         entity.setPhone(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setNickname(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setAddress(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
      }
     
     @Override

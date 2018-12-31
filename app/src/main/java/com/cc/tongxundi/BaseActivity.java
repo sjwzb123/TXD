@@ -54,4 +54,7 @@ public abstract class BaseActivity extends FragmentActivity {
             e.printStackTrace();
         }
     }
+    public void isLogin(){
+
+    }
 }

@@ -41,10 +41,11 @@ public class CommentFragment extends BaseFragment {
     private int groupid;
     private static final String KEY_GROUP_TYPE = "groupType";
     private static final String KEY_GROUP_ID = "groupid";
+    public static final int POST_COMMENT_ID=3;
 
-    public static CommentFragment newInstance(int groupType,int  groupid){
+    public static CommentFragment newInstance(int groupType,String  groupid){
         Bundle bundle=new Bundle();
-        bundle.putInt(KEY_GROUP_ID,groupid);
+        bundle.putString(KEY_GROUP_ID,groupid);
         bundle.putInt(KEY_GROUP_TYPE,groupType);
         CommentFragment commentFragment=new CommentFragment();
         commentFragment.setArguments(bundle);
@@ -137,6 +138,7 @@ public class CommentFragment extends BaseFragment {
 
             @Override
             public void onResponse(Object response) {
+                mEtComment.setText("");
                 hideKeyboard();
                 ToastUtil.showMessage("发表评论成功");
 
