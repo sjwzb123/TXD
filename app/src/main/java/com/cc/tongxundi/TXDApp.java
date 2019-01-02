@@ -1,6 +1,8 @@
 package com.cc.tongxundi;
 
 import android.app.Application;
+import android.content.Context;
+import android.support.multidex.MultiDex;
 
 import com.cc.tongxundi.db.DBHelper;
 import com.cc.tongxundi.im.IMManagerImpl;
@@ -17,6 +19,12 @@ public class TXDApp extends Application {
         super.onCreate();
         DBHelper.getInstance().setDatabase(getApplicationContext());
         initIM();
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
     }
 
     private void initIM() {

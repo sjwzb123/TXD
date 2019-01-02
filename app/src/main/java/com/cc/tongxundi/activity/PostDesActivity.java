@@ -28,7 +28,6 @@ public class PostDesActivity extends BaseActivity {
     private TextView mTvIm;
     private static final String KEY_ITEM = "KEY_POST_ITEM";
     private PostBean.content mItem;
-    private CommentFragment mCommentFragment;
 
     public static void startActivity(Context context, PostBean.content content) {
         Intent intent = new Intent(context, PostDesActivity.class);
@@ -43,6 +42,12 @@ public class PostDesActivity extends BaseActivity {
 
     @Override
     public void initView() {
+        findViewById(R.id.iv_back).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
         mTvContent = findViewById(R.id.tv_content);
         mIvUser = findViewById(R.id.iv_user);
         mTvNick = findViewById(R.id.tv_user_name);
@@ -56,14 +61,19 @@ public class PostDesActivity extends BaseActivity {
                 IMPluginManager.getManager().startChatting(PostDesActivity.this, id);
             }
         });
+        findViewById(R.id.tv_more_comment).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CommentActivity.startActivity(mContext,"3",mItem.getId());
+            }
+        });
         bindDataToView();
 
     }
 
     private void bindDataToView() {
         mItem = (PostBean.content) getIntent().getSerializableExtra(KEY_ITEM);
-        mCommentFragment = CommentFragment.newInstance(CommentFragment.POST_COMMENT_ID, mItem.getId());
-        getSupportFragmentManager().beginTransaction().add(R.id.comm_list, mCommentFragment).commit();
+
         mTvNick.setText(mItem.getNickname());
         mTitme.setText(TimeUtils.getChatTimeStr(mItem.getCreateTime()));
         mTvContent.setText(mItem.getContent());

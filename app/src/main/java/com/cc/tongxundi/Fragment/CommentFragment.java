@@ -37,21 +37,23 @@ public class CommentFragment extends BaseFragment {
     private String TAG = "CommentFragment";
     private EditText mEtComment;
     private Button mBtnPush;
-    private int groupType;
-    private int groupid;
+    private String groupType;
+    private String groupid;
     private static final String KEY_GROUP_TYPE = "groupType";
     private static final String KEY_GROUP_ID = "groupid";
-    public static final int POST_COMMENT_ID=3;
+    public static final String POST_COMMENT_ID = "3";
+    private boolean isRef;
 
-    public static CommentFragment newInstance(int groupType,String  groupid){
-        Bundle bundle=new Bundle();
-        bundle.putString(KEY_GROUP_ID,groupid);
-        bundle.putInt(KEY_GROUP_TYPE,groupType);
-        CommentFragment commentFragment=new CommentFragment();
+    public static CommentFragment newInstance(String groupType, String groupid) {
+        Bundle bundle = new Bundle();
+        bundle.putString(KEY_GROUP_ID, groupid);
+        bundle.putString(KEY_GROUP_TYPE, groupType);
+        CommentFragment commentFragment = new CommentFragment();
         commentFragment.setArguments(bundle);
         return commentFragment;
 
     }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -72,8 +74,8 @@ public class CommentFragment extends BaseFragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        groupType = getArguments().getInt(KEY_GROUP_TYPE);
-        groupid = getArguments().getInt(KEY_GROUP_ID);
+        groupType = getArguments().getString(KEY_GROUP_TYPE);
+        groupid = getArguments().getString(KEY_GROUP_ID);
 
     }
 
@@ -81,6 +83,14 @@ public class CommentFragment extends BaseFragment {
     private void initView(View view) {
         mRvComment = view.findViewById(R.id.rv_comment);
         mSwr = view.findViewById(R.id.srf_comment);
+        mSwr.setRefreshing(true);
+        mSwr.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                isRef = true;
+                getNetData();
+            }
+        });
         mRvComment.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         mAdapter = new CommAadapter(getContext());
         mRvComment.setAdapter(mAdapter);
@@ -106,16 +116,33 @@ public class CommentFragment extends BaseFragment {
     }
 
     private void getNetData() {
+        if (isRef)
+            pageno = 0;
 
         HttpUtil.getInstance().getCommentList(pageno, groupType, groupid, new HttpResultCallback<CommonResultBean<CommentBean>>() {
             @Override
-            public void onError(Request request, Exception e) {
+            public void onError(String msg) {
+                ToastUtil.showMessage("评论获取失败请稍后再试");
+                mSwr.setRefreshing(false);
+                mAdapter.loadMoreComplete();
 
             }
 
             @Override
             public void onResponse(CommonResultBean<CommentBean> response) {
-                mAdapter.loadMore(response.getData().getContent());
+                mAdapter.loadMoreComplete();
+                mSwr.setRefreshing(false);
+                if (response.isStatus()) {
+                    if (isRef) {
+                        mAdapter.refeData(response.getData().getContent());
+                    } else {
+                        mAdapter.loadMore(response.getData().getContent());
+                    }
+
+                }
+                if (response.getData().getContent().size() < 10) {
+                    mAdapter.loadMoreEnd();
+                }
 
             }
 
@@ -124,14 +151,14 @@ public class CommentFragment extends BaseFragment {
 
     private void pushComment() {
         String userId = (String) spManager.getSharedPreference(SPManager.KEY_UID, "");
-        String comment = mEtComment.getText().toString().trim();
+        final String comment = mEtComment.getText().toString().trim();
         if (TextUtils.isEmpty(comment)) {
             Toast.makeText(getContext(), " 评论不能为空", Toast.LENGTH_SHORT).show();
             return;
         }
         HttpUtil.getInstance().pushComment(userId, comment, groupType, groupid, userId, "2", new HttpResultCallback<Object>() {
             @Override
-            public void onError(Request request, Exception e) {
+            public void onError(String msg) {
                 ToastUtil.showMessage("发表评论失败，请稍后再试");
 
             }
@@ -141,10 +168,22 @@ public class CommentFragment extends BaseFragment {
                 mEtComment.setText("");
                 hideKeyboard();
                 ToastUtil.showMessage("发表评论成功");
+                pushCommentComplete(comment);
 
             }
         });
 
+    }
+
+    private void pushCommentComplete(String tx) {
+        if (mAdapter == null)
+            return;
+        CommentBean.content content = new CommentBean.content();
+        content.setContent(tx);
+        content.setCreateTime(System.currentTimeMillis() / 1000);
+        String id = (String) spManager.getSharedPreference(SPManager.KEY_UID, "1001");
+        content.setNickname("用户000" + id);
+        mAdapter.addOneItem(content);
 
     }
 }

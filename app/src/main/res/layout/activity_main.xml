@@ -28,7 +28,8 @@
             android:layout_centerVertical="true"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            android:src="@drawable/button_img"/>
+            android:layout_marginRight="10dp"
+            android:src="@drawable/icon_fabu"/>
     </RelativeLayout>
 
     <View

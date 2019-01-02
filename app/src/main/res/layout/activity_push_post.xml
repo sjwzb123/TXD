@@ -1,165 +1,151 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="5dp"
-    android:background="@color/color_ffffff"
-    android:orientation="vertical">
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/color_ffffff">
-
-        <TextView
-            android:id="@+id/btn_push_post"
-            android:layout_width="30dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="10dp"
-            android:text="发表"
-            android:textColor="#2A8DFF"
-            android:textSize="15sp" />
-
-        <TextView
-            android:id="@+id/tv_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:gravity="center_vertical"
-            android:text="帖子发表"
-            android:textColor="@color/color_000000"
-            android:textSize="18sp" />
-
-        <ImageView
-            android:id="@+id/iv_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
-            android:src="@drawable/icon_back" />
-
-    </RelativeLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/color_EAEAEA"></View>
-
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:background="@color/color_ffffff"
+        android:orientation="vertical"
+        android:padding="5dp">
 
-        <EditText
-            android:id="@+id/et_content"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_marginTop="@dimen/dp_10"
-            android:background="@null"
-            android:gravity="left"
-            android:hint="请输入帖子内容"
-            android:padding="8dp"
-            android:textColor="@color/color_ececec"
-            android:textSize="17sp" />
+            android:layout_height="50dp"
+            android:background="@color/color_ffffff">
 
-        <LinearLayout
-            android:id="@+id/ll_img"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/btn_push_post"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:text="发表"
+                android:textColor="#2A8DFF"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center_vertical"
+                android:text="帖子发表"
+                android:textColor="@color/color_000000"
+                android:textSize="18sp" />
 
             <ImageView
-                android:id="@+id/iv_add"
-                android:layout_width="62dp"
-                android:layout_height="62dp"
-                android:src="@drawable/button_img" />
+                android:id="@+id/iv_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/icon_back" />
 
-        </LinearLayout>
+        </RelativeLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/color_EAEAEA"></View>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
-            android:text="选择主题"
-            android:textColor="@color/color_333333"
-            android:textSize="16sp" />
 
-        <RadioGroup
-            android:id="@+id/rg"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:orientation="horizontal">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <RadioButton
-                android:id="@+id/cb1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/cb_bg"
-                android:button="@null"
-                android:checked="true"
-                android:gravity="center"
-                android:padding="5dp"
-                android:text="主板"
-                android:textColor="@drawable/cb_tv_select"
-                android:textSize="14sp" />
+            <EditText
+                android:id="@+id/et_content"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_marginTop="@dimen/dp_10"
+                android:background="@null"
+                android:gravity="left"
+                android:hint="请输入帖子内容"
+                android:padding="8dp"
+                android:textColor="@color/color_272727"
+                android:textSize="17sp" />
 
-            <RadioButton
-                android:id="@+id/cb2"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:id="@+id/ll_img"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/cb_bg"
-                android:button="@null"
-                android:checked="true"
-                android:gravity="center"
-                android:padding="5dp"
-                android:text="压屏"
-                android:textColor="@drawable/cb_tv_select"
-                android:textSize="14sp" />
+                android:orientation="horizontal">
 
-            <RadioButton
-                android:id="@+id/cb3"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/cb_bg"
-                android:button="@null"
-                android:checked="true"
-                android:gravity="center"
-                android:padding="5dp"
-                android:text="其他"
-                android:textColor="@drawable/cb_tv_select"
-                android:textSize="14sp" />
+                <ImageView
+                    android:id="@+id/iv_add"
+                    android:layout_width="62dp"
+                    android:layout_height="62dp"
+                    android:src="@drawable/button_img" />
 
-            <RadioButton
-                android:id="@+id/cb4"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/cb_bg"
-                android:button="@null"
-                android:checked="true"
-                android:gravity="center"
-                android:padding="5dp"
-                android:text="主板"
-                android:textColor="@drawable/cb_tv_select"
-                android:textSize="14sp" />
-        </RadioGroup>
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="10dp"
+                android:background="@color/color_EAEAEA"></View>
+
+            <RelativeLayout
+                android:id="@+id/rl_theme"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:gravity="center_vertical"
+                android:paddingLeft="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="请选择主题"
+                    android:gravity="center_vertical"
+                    android:textColor="@color/color_333333"
+                    android:textSize="16sp" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingRight="10dp">
+
+                    <TextView
+                        android:id="@+id/tv_theme"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="10dp"
+                        android:textColor="@color/color_2A8DFF"
+                        android:textSize="16sp" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/icon_arrow" />
+
+                </LinearLayout>
+
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/color_EAEAEA"></View>
+
+        </LinearLayout>
 
 
     </LinearLayout>
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rl_theme_list"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone"></android.support.v7.widget.RecyclerView>
 
-</LinearLayout>
+</RelativeLayout>

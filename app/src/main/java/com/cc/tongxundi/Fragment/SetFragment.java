@@ -51,6 +51,7 @@ public class SetFragment extends BaseFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initView(view);
+        initShare(view);
     }
 
     private void initView(View view) {
@@ -81,6 +82,7 @@ public class SetFragment extends BaseFragment {
         view.findViewById(R.id.rl_share).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                llShare.setVisibility(View.VISIBLE);
 
             }
         });
@@ -103,6 +105,7 @@ public class SetFragment extends BaseFragment {
     private void initShare(View view){
         api = WXAPIFactory.createWXAPI(getContext(), APP_ID);
         llShare = (LinearLayout) view.findViewById(R.id.ll_share);
+
         shareView = view.findViewById(R.id.iv_share);
         ivChat = (ImageView) view.findViewById(R.id.iv_weixin);
         ivF = (ImageView)view .findViewById(R.id.iv_weixin_m);

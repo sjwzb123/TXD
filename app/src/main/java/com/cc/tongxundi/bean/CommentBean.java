@@ -16,6 +16,8 @@ public class CommentBean extends BaseBean {
     *                 "userId": 1
     *
     *
+    *
+    *
     * */
    private List<content> content;
 
@@ -27,10 +29,25 @@ public class CommentBean extends BaseBean {
         this.content = content;
     }
 
-    public class content{
-       private String content;
+    public static class content{
+
+        /**
+         * "avatarUrl": "",
+         * 			"content": "mms",
+         * 			"createTime": 1546411950000,
+         * 			"groupId": "20181229104014528522630928531456",
+         * 			"groupType": 3,
+         * 			"id": 39,
+         * 			"nickname": "用户9984",
+         * 			"replyId": 0,
+         * 			"replyUserId": 0,
+         * 			"replyUserNickname": "",
+         * 			"userId": 2
+         */
+        private String avatarUrl;
+        private String content;
        private long createTime;
-       private int groupId;
+       private String groupId;
        private int groupType;
        private  int id ;
        private String nickname;
@@ -39,7 +56,15 @@ public class CommentBean extends BaseBean {
        private String replyUserNickname;
        private int userId;
 
-       public String getContent() {
+        public String getAvatarUrl() {
+            return avatarUrl;
+        }
+
+        public void setAvatarUrl(String avatarUrl) {
+            this.avatarUrl = avatarUrl;
+        }
+
+        public String getContent() {
            return content;
        }
 
@@ -55,11 +80,11 @@ public class CommentBean extends BaseBean {
            this.createTime = createTime;
        }
 
-       public int getGroupId() {
+       public String getGroupId() {
            return groupId;
        }
 
-       public void setGroupId(int groupId) {
+       public void setGroupId(String groupId) {
            this.groupId = groupId;
        }
 

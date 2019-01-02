@@ -39,7 +39,7 @@ public class VideoDesActivity extends BaseActivity {
     private String newsTitle;
     private View shareView;
     private CommentFragment mCommentFragment;
-    private int groupType = 1;
+    private String groupType = "1";
 
     public static void startActivity(Context context, VideoBean videoBean) {
         Intent intent = new Intent(context, VideoDesActivity.class);

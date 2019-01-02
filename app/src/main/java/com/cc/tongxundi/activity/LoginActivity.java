@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -97,21 +98,21 @@ public class LoginActivity extends BaseActivity {
         }
         HttpUtil.getInstance().login(phone, code, addr, new HttpResultCallback<CommonResultBean<UserBean>>() {
             @Override
-            public void onError(Request request, Exception e) {
+            public void onError(String msg) {
                 mLoadView.dismiss();
 
             }
 
             @Override
             public void onResponse(CommonResultBean<UserBean> response) {
-                if (response.isStatus()){
+                if (response.isStatus()) {
                     //127051
                     mUserBean = response.getData();
                     // UserDbHelper.getInstance().insertUser(userBean);
                     // DebugLog.d(TAG, mUserBean.toString());
-                    String nickname=TextUtils.isEmpty(mUserBean.getNickname())?"用户000"+mUserBean.getId():mUserBean.getNickname();
+                    String nickname = TextUtils.isEmpty(mUserBean.getNickname()) ? "用户000" + mUserBean.getId() : mUserBean.getNickname();
                     loginIM(String.valueOf(mUserBean.getId()), nickname);
-                }else {
+                } else {
                     mLoadView.dismiss();
                     ToastUtil.showMessage(response.getMsg());
                 }
@@ -160,22 +161,23 @@ public class LoginActivity extends BaseActivity {
             mLoadView.dismiss();
             if (SDKCoreHelper.ACTION_SDK_CONNECT.equals(intent.getAction())) {
                 if (SDKCoreHelper.isLoginSuccess(intent)) {
-                    String pushToken = ECPreferences.getSharedPreferences().getString("pushToken", null);
-                    LogUtil.d(TAG, "SDK connect Success ,reportToken:" + pushToken);
-                    if (!TextUtils.isEmpty(pushToken)) {
-                        // 上报华为/小米推送设备token
-                        ECDevice.reportHuaWeiToken(pushToken);
-                    }
-                    spManager.put(SPManager.KEY_UID, String.valueOf(mUserBean.getId()));
-                    spManager.put(SPManager.KEY_IS_LOGIN, true);
-                    spManager.put(SPManager.KEY_ADDR,mUserBean.getAddress());
-                    spManager.put(SPManager.KEY_PHONE,mUserBean.getPhone());
+                    DebugLog.d(TAG, "login  succ------");
                     // 初始化IM数据库
                     DaoHelper.init(LoginActivity.this, new IMDao());
-                    Intent action = new Intent(LoginActivity.this, MainActivity.class);
-                    action.putExtra("userid", AppMgr.getUserId());
-                    startActivity(action);
-                    finish();
+                    MainActivity.startActivity(mContext);
+                    LoginActivity.this.finish();
+                    try {
+                        spManager.put(SPManager.KEY_UID, String.valueOf(mUserBean.getId()));
+                        spManager.put(SPManager.KEY_IS_LOGIN, true);
+//                        spManager.put(SPManager.KEY_ADDR,mUserBean.getAddress());
+                        //     spManager.put(SPManager.KEY_PHONE,mUserBean.getPhone());
+
+                    } catch (Exception e) {
+
+
+                    }
+
+
                 } else {
                     int error = intent.getIntExtra("error", 0);
                     if (error == SdkErrorCode.CONNECTING) return;

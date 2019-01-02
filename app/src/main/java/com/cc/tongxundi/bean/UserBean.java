@@ -17,6 +17,15 @@ public class UserBean extends BaseBean{
     private String phone;
     private String nickname;
     private String address;
+    private String loginname;
+
+    public String getLoginname() {
+        return loginname;
+    }
+
+    public void setLoginname(String loginname) {
+        this.loginname = loginname;
+    }
 
     public String getAddress() {
         return address;
@@ -26,14 +35,15 @@ public class UserBean extends BaseBean{
         this.address = address;
     }
 
-    @Generated(hash = 68891431)
+    @Generated(hash = 1301676788)
     public UserBean(long createTime, int id, String phone, String nickname,
-            String address) {
+            String address, String loginname) {
         this.createTime = createTime;
         this.id = id;
         this.phone = phone;
         this.nickname = nickname;
         this.address = address;
+        this.loginname = loginname;
     }
 
     @Generated(hash = 1203313951)

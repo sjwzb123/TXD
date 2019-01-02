@@ -107,6 +107,7 @@ public class VideoFragment extends BaseFragment {
                     @Override
                     public void run() {
                         if (isRef) {
+                            mAdapter.setEnableLoadMore(true);
                             mAdapter.refData(list);
                         } else {
                             mAdapter.addMore(list);

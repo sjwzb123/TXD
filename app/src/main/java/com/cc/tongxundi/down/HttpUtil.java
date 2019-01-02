@@ -4,6 +4,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.LoginFilter;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.cc.tongxundi.down.Http.HttpNetCallBack;
@@ -58,6 +59,7 @@ public class HttpUtil {
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     private static final MediaType MEDIA_TYPE_PNG = MediaType.parse("image/png");
     public static final String UP_LOAD_FILE = BASE_URL + "api/image/upload";
+    public static final String THEME_LIST = BASE_URL + "api/theme/list";
 
     private Handler mHandler;
     private Gson mGson;
@@ -145,6 +147,7 @@ public class HttpUtil {
         mHandler = new Handler(Looper.getMainLooper());
         mGson = new Gson();
     }
+
 
     /**
      * okHttp post同步请求表单提交
@@ -242,9 +245,7 @@ public class HttpUtil {
         mOkHttpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                if (callBack != null) {
-                    callBack.onError(request, e);
-                }
+                sendFailedCallBack(callBack);
             }
 
             @Override
@@ -341,6 +342,7 @@ public class HttpUtil {
     }
 
     private void getDataAsynFromNet(final String url, final HttpResultCallback callBack) {
+        DebugLog.d(TAG, "request  url  " + url);
         //1 构造Request
         Request.Builder builder = new Request.Builder();
         final Request request = builder.get().url(url).build();
@@ -350,19 +352,13 @@ public class HttpUtil {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, final IOException e) {
-                if (callBack!=null)
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            callBack.onError(request,e);
-                        }
-                    });
+                sendFailedCallBack(callBack);
 
 
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
+            public void onResponse(final Call call, Response response) throws IOException {
 
                 try {
                     final String responseMessage = response.message();
@@ -372,16 +368,32 @@ public class HttpUtil {
                         sendSuccResult(mGson.fromJson(body, callBack.mType), callBack);
 
                     } else {
-                        Exception exception = new Exception(response.code() + ":" + responseMessage);
+                        final Exception exception = new Exception(response.code() + ":" + responseMessage);
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                callBack.onError("");
+                            }
+                        });
                         //sendFailedStringCallback(response.request(), exception, resCallBack);
                     }
                 } catch (IOException e) {
                     //sendFailedStringCallback(response.request(), e, resCallBack);
                 } catch (com.google.gson.JsonParseException e) {//Json解析的错误
-                    // sendFailedStringCallback(response.request(), e, resCallBack);
+                    e.printStackTrace();
+                    sendFailedCallBack(callBack);
                 }
 
 
+            }
+        });
+    }
+
+    private void sendFailedCallBack(final HttpResultCallback callback) {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                callback.onError("");
             }
         });
     }
@@ -401,13 +413,17 @@ public class HttpUtil {
         getDataAsynFromNet(news_url, callBack);
     }
 
-    public void getCommentList(int pageNo, int roupType, int groupId, HttpResultCallback callBack) {
+    public void getCommentList(int pageNo, String roupType, String groupId, HttpResultCallback callBack) {
         String url = COMMENTLIST + pageNo + "&groupType=" + roupType + "&groupId=" + groupId;
         getDataAsynFromNet(url, callBack);
 
     }
 
-    public void pushComment(String userId,String content, int groupType, int groupId, String replyId, String replyUserId, HttpResultCallback callBack) {
+    public void getThemeList(HttpResultCallback callback) {
+        getDataAsynFromNet(THEME_LIST, callback);
+    }
+
+    public void pushComment(String userId, String content, String groupType, String groupId, String replyId, String replyUserId, HttpResultCallback callBack) {
         /**
          * 评论 /api/comment/create POST
          *    参数：
@@ -427,7 +443,7 @@ public class HttpUtil {
          */
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.putOpt("userId",userId);
+            jsonObject.putOpt("userId", userId);
             jsonObject.putOpt("content", content);
             jsonObject.putOpt("groupType", groupType);
             jsonObject.putOpt("groupId", groupId);
@@ -464,9 +480,12 @@ public class HttpUtil {
             jsonObject.putOpt("content", content);
             jsonObject.putOpt("userId", userId);
             JSONArray jsonArray = new JSONArray();
-            for (String path : thumbnails) {
-                jsonArray.put(path);
+            if (thumbnails != null) {
+                for (String path : thumbnails) {
+                    jsonArray.put(path);
+                }
             }
+
             jsonObject.putOpt("thumbnails", jsonArray);
             jsonObject.putOpt("theme", theme);
         } catch (JSONException e) {
@@ -529,10 +548,11 @@ public class HttpUtil {
         int i = 0;
         // mImgUrls为存放图片的url集合
         MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
-        // for (String path : list) {
-        File f = new File(list.get(0));
-        builder.addFormDataPart("image", f.getName(), RequestBody.create(MEDIA_TYPE_PNG, f));
-        // }
+        for (String path : list) {
+            File f = new File(path);
+            builder.addFormDataPart("image", f.getName(), RequestBody.create(MEDIA_TYPE_PNG, f));
+        }
+
         // 添加其它信息
         final MultipartBody requestBody = builder.build();
         // 构建请求
@@ -552,11 +572,58 @@ public class HttpUtil {
             public void onResponse(Call call, Response response) throws IOException {
                 String re = response.body().string();
                 DebugLog.d(TAG, "  图片上传成功 ------" + re);
-
+                sendSuccResult(mGson.fromJson(re, callBack.mType), callBack);
                 // System.out.println("上传照片成功：response = " + response.body().string());
 
             }
         });
 
     }
+
+
+    public void upload(String url, String filePath, final HttpResultCallback callback) {
+        if (TextUtils.isEmpty(filePath) || TextUtils.isEmpty(url))
+            return;
+        String fileName = filePath.substring(filePath.indexOf("."));
+        RequestBody requestBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("image", fileName,
+                        RequestBody.create(MediaType.parse("multipart/form-data"), new File(filePath)))
+                .build();
+
+        Request request = new Request.Builder()
+                .header("Authorization", "Client-ID " + UUID.randomUUID())
+                .url(url)
+                .post(requestBody)
+                .build();
+
+        mOkHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                DebugLog.d(TAG, "上传失败---------");
+                sendFailedCallBack(callback);
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) {
+
+                String body = null;
+                try {
+
+                    body = response.body().string();
+                    DebugLog.d(TAG, "上传成功---------" + body);
+                    // sendSuccResult(mGson.fromJson(body, callback.mType), callback);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    sendFailedCallBack(callback);
+                }
+
+
+            }
+        });
+
+    }
+
+
 }

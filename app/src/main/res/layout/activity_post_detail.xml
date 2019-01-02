@@ -10,6 +10,42 @@
         android:background="@color/color_ffffff"
         android:orientation="vertical"
         android:padding="10dp">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/color_ffffff">
+
+            <TextView
+                android:id="@+id/btn_push_post"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:text="发表"
+                android:visibility="gone"
+                android:textColor="#2A8DFF"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center_vertical"
+                android:text="帖子详情"
+                android:textColor="@color/color_000000"
+                android:textSize="18sp" />
+
+            <ImageView
+                android:id="@+id/iv_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/icon_back" />
+
+        </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -78,10 +114,21 @@
             android:orientation="vertical">
 
         </LinearLayout>
-        <FrameLayout
-            android:id="@+id/comm_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"></FrameLayout>
+
+        <TextView
+            android:id="@+id/tv_more_comment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/tv_comment_boder_bg"
+            android:paddingLeft="20dp"
+            android:paddingTop="10dp"
+            android:paddingRight="20dp"
+            android:paddingBottom="10dp"
+            android:text="查看更多评论"
+            android:textColor="@color/color_393939"
+            android:textSize="15sp" />
 
     </LinearLayout>
 </ScrollView>

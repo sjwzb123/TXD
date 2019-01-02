@@ -47,10 +47,8 @@ public abstract class HttpResultCallback<T> {
     /**
      * 请求失败的时候
      *
-     * @param request
-     * @param e
      */
-    public abstract void onError(Request request, Exception e);
+    public abstract void onError(String msg);
 
     /**
      * @param response

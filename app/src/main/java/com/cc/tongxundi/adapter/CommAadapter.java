@@ -15,6 +15,8 @@ import com.chad.library.adapter.base.BaseViewHolder;
 
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class CommAadapter extends BaseQuickAdapter<CommentBean.content, BaseViewHolder> {
     private Context context;
     public CommAadapter(Context context) {
@@ -24,7 +26,8 @@ public class CommAadapter extends BaseQuickAdapter<CommentBean.content, BaseView
 
     @Override
     protected void convert(BaseViewHolder helper, CommentBean.content item) {
-        ImageView iv = helper.getView(R.id.iv_user);
+        CircleImageView iv = helper.getView(R.id.iv_user);
+
         helper.setText(R.id.tv_user_name, item.getNickname());
         helper.setText(R.id.tv_time, String.valueOf(TimeUtils.getChatTimeStr(item.getCreateTime())));
         helper.setText(R.id.tv_content, item.getContent());
@@ -42,4 +45,11 @@ public class CommAadapter extends BaseQuickAdapter<CommentBean.content, BaseView
         notifyDataSetChanged();
 
     }
+    public void addOneItem(CommentBean.content content) {
+        mData.add(0,content);
+        notifyDataSetChanged();
+
+    }
+
+
 }

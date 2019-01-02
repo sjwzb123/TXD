@@ -15,15 +15,25 @@ import com.cc.tongxundi.R;
 public class ItemImg extends RelativeLayout {
     private ImageView mIvDel;
     private ImageView mIv;
-
+    private DelImgListener delImgListener;
+    private int index;
     public ItemImg(Context context) {
         super(context);
         initView(context);
     }
 
+
     public ItemImg(Context context, AttributeSet attrs) {
         super(context, attrs);
         initView(context);
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+    public void setDelImgListener(DelImgListener delImgListener) {
+        this.delImgListener = delImgListener;
     }
 
     private void initView(Context context) {
@@ -36,12 +46,21 @@ public class ItemImg extends RelativeLayout {
             public void onClick(View view) {
                 LinearLayout v = (LinearLayout) getParent();
                 v.removeView(ItemImg.this);
+                if (delImgListener!=null)
+                    delImgListener.onDelImg(index);
             }
         });
 
     }
+    public void showDelImg(boolean isShow){
+
+        mIvDel.setVisibility(isShow?VISIBLE:GONE);
+    }
 
     public void setData(String url) {
         Glide.with(getContext()).load(url).into(mIv);
+    }
+    public interface DelImgListener{
+        void onDelImg(int index);
     }
 }

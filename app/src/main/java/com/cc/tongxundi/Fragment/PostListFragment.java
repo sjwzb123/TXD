@@ -15,6 +15,7 @@ import com.cc.tongxundi.R;
 import com.cc.tongxundi.activity.PostDesActivity;
 import com.cc.tongxundi.adapter.PostAadapter;
 import com.cc.tongxundi.bean.PostBean;
+import com.cc.tongxundi.bean.ThemeBean;
 import com.cc.tongxundi.down.Http.CommonResultBean;
 import com.cc.tongxundi.down.Http.CommonResultListBean;
 import com.cc.tongxundi.down.Http.HttpNetCallBack;
@@ -92,6 +93,7 @@ public class PostListFragment extends BaseFragment {
             }
         });
 
+
     }
 
     @Override
@@ -108,7 +110,9 @@ public class PostListFragment extends BaseFragment {
             pageno=0;
         HttpUtil.getInstance().getPostList(pageno, new HttpResultCallback<CommonResultBean<PostBean>>() {
             @Override
-            public void onError(Request request, Exception e) {
+            public void onError(String msg) {
+                mSrl.setRefreshing(false);
+                mPostAdapter.loadMoreComplete();
 
             }
 
@@ -136,4 +140,6 @@ public class PostListFragment extends BaseFragment {
 
         });
     }
+
+
 }

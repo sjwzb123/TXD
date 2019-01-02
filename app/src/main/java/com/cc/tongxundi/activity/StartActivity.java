@@ -31,7 +31,13 @@ public class StartActivity extends BaseActivity {
         mIvIcon.postDelayed(new Runnable() {
             @Override
             public void run() {
-                boolean isLogin = (boolean) spManager.getSharedPreference(SPManager.KEY_IS_LOGIN, false);
+                //  boolean isLogin = (boolean) spManager.getSharedPreference(SPManager.KEY_IS_LOGIN, false);
+                boolean isLogin = AppMgr.getClientUser() != null;
+
+                if (AppMgr.getClientUser() != null) {
+                    LogUtil.d(TAG, "SDK auto connect...");
+                    SDKCoreHelper.init(getApplicationContext());
+                }
                 if (isLogin) {
                     MainActivity.startActivity(StartActivity.this);
                 } else {
