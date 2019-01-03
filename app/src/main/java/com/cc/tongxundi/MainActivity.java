@@ -64,16 +64,21 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (AppMgr.getClientUser() != null) {
-            LogUtil.d(TAG, "SDK auto connect...");
-            SDKCoreHelper.init(getApplicationContext());
-        }
+//        if (AppMgr.getClientUser() != null) {
+//            LogUtil.d(TAG, "SDK auto connect...");
+//            SDKCoreHelper.init(getApplicationContext());
+//        }
 
     }
 
     @Override
     public int getContentView() {
         return R.layout.activity_main;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     @Override

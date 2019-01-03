@@ -20,7 +20,7 @@ public class UserDbHelper {
         mUserDao.insert(userBean);
     }
 
-    public UserBean getUserByUserId(int id) {
+    public UserBean getUserByUserId(String id) {
         List<UserBean> list = mUserDao.queryBuilder().where(UserBeanDao.Properties.Id.eq(id)).build().list();
         if (list != null && list.size() > 0)
             return list.get(0);

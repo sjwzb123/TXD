@@ -25,6 +25,7 @@ import com.tencent.mm.opensdk.modelmsg.WXMediaMessage;
 import com.tencent.mm.opensdk.modelmsg.WXWebpageObject;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
+import com.yuntongxun.plugin.common.SDKCoreHelper;
 
 
 public class SetFragment extends BaseFragment {
@@ -74,6 +75,7 @@ public class SetFragment extends BaseFragment {
         view.findViewById(R.id.btn_login_out).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                SDKCoreHelper.logout();
                 spManager.clear();
                 getActivity().finish();
                 LoginActivity.startActivity(getContext());

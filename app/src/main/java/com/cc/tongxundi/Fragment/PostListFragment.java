@@ -16,11 +16,15 @@ import com.cc.tongxundi.activity.PostDesActivity;
 import com.cc.tongxundi.adapter.PostAadapter;
 import com.cc.tongxundi.bean.PostBean;
 import com.cc.tongxundi.bean.ThemeBean;
+import com.cc.tongxundi.bean.UserBean;
+import com.cc.tongxundi.db.UserDbHelper;
 import com.cc.tongxundi.down.Http.CommonResultBean;
 import com.cc.tongxundi.down.Http.CommonResultListBean;
 import com.cc.tongxundi.down.Http.HttpNetCallBack;
 import com.cc.tongxundi.down.HttpResultCallback;
 import com.cc.tongxundi.down.HttpUtil;
+import com.cc.tongxundi.greendao.UserBeanDao;
+import com.cc.tongxundi.im.IMManagerImpl;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.tencent.ijk.media.player.pragma.DebugLog;
 import com.yuntongxun.plugin.common.common.utils.ToastUtil;
@@ -81,6 +85,9 @@ public class PostListFragment extends BaseFragment {
                 switch (view.getId()) {
                     case R.id.tv_im:
                         String id = String.valueOf(mPostAdapter.getItem(position).getUserId());
+                        IMManagerImpl.getInstance().addUser(mPostAdapter.getItem(position).getUser());
+                        UserDbHelper.getInstance().insertUser(mPostAdapter.getItem(position).getUser());
+                        String nickName=mPostAdapter.getItem(position).getNickname();
                         IMPluginManager.getManager().startChatting(getContext(), id);
                         break;
                 }

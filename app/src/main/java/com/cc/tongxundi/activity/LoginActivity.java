@@ -165,12 +165,14 @@ public class LoginActivity extends BaseActivity {
                     // 初始化IM数据库
                     DaoHelper.init(LoginActivity.this, new IMDao());
                     MainActivity.startActivity(mContext);
+//                    unregisterReceiver(mSDKNotifyReceiver);
                     LoginActivity.this.finish();
                     try {
                         spManager.put(SPManager.KEY_UID, String.valueOf(mUserBean.getId()));
                         spManager.put(SPManager.KEY_IS_LOGIN, true);
-//                        spManager.put(SPManager.KEY_ADDR,mUserBean.getAddress());
-                        //     spManager.put(SPManager.KEY_PHONE,mUserBean.getPhone());
+                        spManager.put(SPManager.KEY_ADDR, mUserBean.getAddress());
+                        spManager.put(SPManager.KEY_PHONE, mUserBean.getPhone());
+                        spManager.put(SPManager.KEY_NICK_NAME,mUserBean.getNickname());
 
                     } catch (Exception e) {
 
@@ -238,6 +240,6 @@ public class LoginActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(mSDKNotifyReceiver);
+          unregisterReceiver(mSDKNotifyReceiver);
     }
 }

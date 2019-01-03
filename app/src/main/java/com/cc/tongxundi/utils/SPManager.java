@@ -12,6 +12,7 @@ public class SPManager {
     public static String KEY_ADDR = "addr";
     public static String KEY_UID="KEY_UID";
     private String FILENAME = "TXD";
+    public static  final String KEY_NICK_NAME="nickname";
     private SharedPreferences sharedPreferences;
     /*
      * 保存手机里面的名字

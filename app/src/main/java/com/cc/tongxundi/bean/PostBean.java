@@ -52,9 +52,17 @@ public class PostBean extends BaseBean {
         private int userId;
         private long createTime;
 
+        public UserBean getUser() {
+            UserBean userBean = new UserBean();
+            userBean.setNickname(nickname);
+            userBean.setId(userId);
+            return userBean;
+        }
+
+
         public String getContent() {
             if (TextUtils.isEmpty(content))
-                content="新年快乐,happy new  year ! 通讯帝祝大家新年快乐 ";
+                content = "新年快乐,happy new  year ! 通讯帝祝大家新年快乐 ";
             return content;
         }
 
