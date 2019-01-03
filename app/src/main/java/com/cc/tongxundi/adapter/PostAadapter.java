@@ -26,9 +26,9 @@ public class PostAadapter extends BaseQuickAdapter<PostBean.content,BaseViewHold
 
     @Override
     protected void convert(BaseViewHolder helper, PostBean.content item) {
-        String url="http://gss0.baidu.com/-vo3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/8435e5dde71190ef3bee9ce4cc1b9d16fdfa60f7.jpg";
+       // String url="http://gss0.baidu.com/-vo3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/8435e5dde71190ef3bee9ce4cc1b9d16fdfa60f7.jpg";
         CircleImageView iv=helper.getView(R.id.iv_user);
-        Glide.with(mContext).load(url).into(iv);
+       // Glide.with(mContext).load(url).into(iv);
         helper.setText(R.id.tv_user_name,item.getNickname());
         helper.setText(R.id.tv_time,String.valueOf(TimeUtils.getChatTimeStr(item.getCreateTime())));
         helper.setText(R.id.tv_content,item.getContent());

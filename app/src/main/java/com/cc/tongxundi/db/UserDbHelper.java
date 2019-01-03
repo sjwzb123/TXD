@@ -8,6 +8,7 @@ import java.util.List;
 public class UserDbHelper {
     private UserBeanDao mUserDao;
     private static UserDbHelper instance = new UserDbHelper();
+
     private UserDbHelper() {
         mUserDao = DBHelper.getInstance().getUserDao();
     }
@@ -17,6 +18,9 @@ public class UserDbHelper {
     }
 
     public void insertUser(UserBean userBean) {
+        if (getUserByUserId(String.valueOf(userBean.getId())) != null) {
+            return;
+        }
         mUserDao.insert(userBean);
     }
 

@@ -77,8 +77,8 @@
 
                 <ImageView
                     android:id="@+id/iv_add"
-                    android:layout_width="62dp"
-                    android:layout_height="62dp"
+                    android:layout_width="81dp"
+                    android:layout_height="81dp"
                     android:src="@drawable/button_img" />
 
             </LinearLayout>

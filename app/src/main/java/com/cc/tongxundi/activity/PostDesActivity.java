@@ -13,6 +13,8 @@ import com.cc.tongxundi.BaseActivity;
 import com.cc.tongxundi.Fragment.CommentFragment;
 import com.cc.tongxundi.R;
 import com.cc.tongxundi.bean.PostBean;
+import com.cc.tongxundi.db.UserDbHelper;
+import com.cc.tongxundi.im.IMManagerImpl;
 import com.cc.tongxundi.utils.TimeUtils;
 import com.cc.tongxundi.view.ItemImg;
 import com.yuntongxun.plugin.im.manager.IMPluginManager;
@@ -58,6 +60,8 @@ public class PostDesActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 String id = String.valueOf(mItem.getUserId());
+                IMManagerImpl.getInstance().addUser(mItem.getUser());
+                UserDbHelper.getInstance().insertUser(mItem.getUser());
                 IMPluginManager.getManager().startChatting(PostDesActivity.this, id);
             }
         });
