@@ -119,6 +119,7 @@ public class PostListFragment extends BaseFragment {
             @Override
             public void onError(String msg) {
                 mSrl.setRefreshing(false);
+
                 mPostAdapter.loadMoreComplete();
 
             }
