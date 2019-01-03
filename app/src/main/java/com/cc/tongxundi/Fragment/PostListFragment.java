@@ -87,8 +87,8 @@ public class PostListFragment extends BaseFragment {
                         String id = String.valueOf(mPostAdapter.getItem(position).getUserId());
                         IMManagerImpl.getInstance().addUser(mPostAdapter.getItem(position).getUser());
                         UserDbHelper.getInstance().insertUser(mPostAdapter.getItem(position).getUser());
-                        String nickName=mPostAdapter.getItem(position).getNickname();
-                        IMPluginManager.getManager().startChatting(getContext(), id);
+                        String nickName = mPostAdapter.getItem(position).getNickname();
+                        IMPluginManager.getManager().startChatting(getContext(), id, nickName);
                         break;
                 }
             }
@@ -114,7 +114,7 @@ public class PostListFragment extends BaseFragment {
 
     private void getNetData(final boolean isFresh) {
         if (isFresh)
-            pageno=0;
+            pageno = 0;
         HttpUtil.getInstance().getPostList(pageno, new HttpResultCallback<CommonResultBean<PostBean>>() {
             @Override
             public void onError(String msg) {
@@ -128,7 +128,7 @@ public class PostListFragment extends BaseFragment {
 
                 mSrl.setRefreshing(false);
                 mPostAdapter.loadMoreComplete();
-                if (response.getData().getContent().size()>0) {
+                if (response.getData().getContent().size() > 0) {
                     pageno++;
                     if (isFresh) {
                         mPostAdapter.refeData(response.getData().getContent());
