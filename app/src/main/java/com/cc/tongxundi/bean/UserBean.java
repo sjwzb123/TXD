@@ -1,17 +1,19 @@
 package com.cc.tongxundi.bean;
 
+import android.text.TextUtils;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
-public class UserBean extends BaseBean{
+public class UserBean extends BaseBean {
     /**
      * "createTime": 1539747998000,
-     *      * 		"id": 2,
-     *      * 		"loginName": "13164232910",
-     *      * 		"phone": "13164232910"
+     * * 		"id": 2,
+     * * 		"loginName": "13164232910",
+     * * 		"phone": "13164232910"
      */
-    
+
     private long createTime;
     private int id;
     private String phone;
@@ -37,7 +39,7 @@ public class UserBean extends BaseBean{
 
     @Generated(hash = 1301676788)
     public UserBean(long createTime, int id, String phone, String nickname,
-            String address, String loginname) {
+                    String address, String loginname) {
         this.createTime = createTime;
         this.id = id;
         this.phone = phone;
@@ -84,6 +86,8 @@ public class UserBean extends BaseBean{
     }
 
     public String getNickname() {
+        if (TextUtils.isEmpty(nickname))
+            nickname = "用户000" + id;
         return nickname;
     }
 

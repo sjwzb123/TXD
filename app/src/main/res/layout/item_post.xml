@@ -59,9 +59,10 @@
         android:id="@+id/tv_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_10"
         android:layout_marginTop="10dp"
-        android:text="d ffff"
         android:letterSpacing="0.1"
+        android:text="d ffff"
         android:textColor="@color/color_393939"
         android:textSize="16sp" />
 
@@ -72,6 +73,12 @@
         android:orientation="horizontal">
 
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/dp_10"
+        android:background="@color/color_EAEAEA"></View>
 
 
 </LinearLayout>

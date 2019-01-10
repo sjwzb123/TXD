@@ -75,6 +75,7 @@ public class PushPostActivity extends BaseActivity {
         mBtnPush.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                title = TextUtils.isEmpty(title) ? "维修" : title;
                 if (TextUtils.isEmpty(title)) {
                     ToastUtil.showMessage("主题不能为空");
                     return;

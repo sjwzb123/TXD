@@ -2,4 +2,5 @@
 <resources>
     <dimen name="dimen_81">81dp</dimen>
     <dimen name="dp_5">5dp</dimen>
+    <dimen name="dp_200">200dp</dimen>
 </resources>

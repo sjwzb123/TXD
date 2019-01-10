@@ -129,10 +129,10 @@ public class LoginActivity extends BaseActivity {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(SDKCoreHelper.ACTION_SDK_CONNECT);
         registerReceiver(mSDKNotifyReceiver, intentFilter);
-        if (AppMgr.getClientUser() != null) {
-            LogUtil.d(TAG, "SDK auto connect...");
-            SDKCoreHelper.init(getApplicationContext());
-        }
+//        if (AppMgr.getClientUser() != null) {
+//            LogUtil.d(TAG, "SDK auto connect...");
+//            SDKCoreHelper.init(getApplicationContext());
+//        }
     }
 
 

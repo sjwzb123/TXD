@@ -3,6 +3,7 @@ package com.cc.tongxundi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -20,13 +21,14 @@ public abstract class BaseActivity extends FragmentActivity {
     public Context mContext;
     public LoadingView mLoadView;
     public SPManager spManager;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getContentView());
-        mContext=this;
-        spManager=new SPManager(this);
-        mLoadView=new LoadingView(this,R.style.CustomDialog);
+        mContext = this;
+        spManager = new SPManager(this);
+        mLoadView = new LoadingView(this, R.style.CustomDialog);
         verifyStoragePermissions(this);
         initView();
     }
@@ -34,6 +36,7 @@ public abstract class BaseActivity extends FragmentActivity {
     public abstract int getContentView();
 
     public abstract void initView();
+
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {
             "android.permission.READ_EXTERNAL_STORAGE",
@@ -54,7 +57,15 @@ public abstract class BaseActivity extends FragmentActivity {
             e.printStackTrace();
         }
     }
-    public void isLogin(){
+
+    public void isLogin() {
 
     }
+
+    public boolean isLand() {
+        Configuration mConfiguration = getResources().getConfiguration(); //获取设置的配置信息
+        int ori = mConfiguration.orientation; //获取屏幕方向
+        return ori == mConfiguration.ORIENTATION_LANDSCAPE;
+    }
+
 }

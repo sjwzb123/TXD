@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.cc.tongxundi"
-    android:versionCode="2"
-    android:versionName="20181208">
+    android:versionCode="3"
+    android:versionName="20190104">
 
     <application
         android:name=".TXDApp"
@@ -29,6 +29,7 @@
         </activity>
         <activity
             android:name=".activity.VideoDesActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"></activity>
         <activity
             android:name=".activity.LoginActivity"

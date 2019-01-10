@@ -2,6 +2,7 @@ package com.cc.tongxundi.im;
 
 import android.content.Context;
 import android.content.Intent;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.cc.tongxundi.bean.UserBean;
@@ -40,8 +41,6 @@ public class IMManagerImpl implements OnIMBindViewListener, OnNotificationClickL
     }
 
     private IMManagerImpl() {
-
-        HeadList.add("http://4493bz.1985t.com/uploads/allimg/150127/4-15012G52133.jpg");
         HeadList.add("https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1484031904&di=91b67952b067fc0403dbfc2825422f03&src=http://pic41.nipic.com/20140503/9908010_145213320111_2.jpg");
         HeadList.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1484041987878&di=3a58317c2b0e5fca1e9bbecf760a6c34&imgtype=0&src=http%3A%2F%2Fpic45.nipic.com%2F20140805%2F7447430_145001150000_2.jpg");
         HeadList.add("http://new-img4.ol-img.com/moudlepic/199_module_images/201612/5865e0b6a6600_273.jpg");
@@ -82,8 +81,12 @@ public class IMManagerImpl implements OnIMBindViewListener, OnNotificationClickL
 
     @Override
     public String onBindAvatarByUrl(Context context, String s) {
+        if (!TextUtils.isEmpty(s)){
+            int index=s.hashCode()%(HeadList.size()-1);
+            return HeadList.get(index);
+        }
 
-        return HeadList.get(0);
+        return HeadList.get(4);
     }
 
     @Override

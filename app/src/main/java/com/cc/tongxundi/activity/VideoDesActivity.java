@@ -2,11 +2,15 @@ package com.cc.tongxundi.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -40,6 +44,7 @@ public class VideoDesActivity extends BaseActivity {
     private View shareView;
     private CommentFragment mCommentFragment;
     private String groupType = "1";
+    private FrameLayout mFl;
 
     public static void startActivity(Context context, VideoBean videoBean) {
         Intent intent = new Intent(context, VideoDesActivity.class);
@@ -55,6 +60,7 @@ public class VideoDesActivity extends BaseActivity {
 
     @Override
     public void initView() {
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         api = WXAPIFactory.createWXAPI(this, APP_ID);
         llShare = (LinearLayout) findViewById(R.id.ll_share);
         shareView = findViewById(R.id.iv_share);
@@ -88,14 +94,32 @@ public class VideoDesActivity extends BaseActivity {
             }
         });
         mPlayView = (MediaPlayView) findViewById(R.id.video);
+        mPlayView.setLitener(new MediaPlayView.OnScreenOnClickListener() {
+            @Override
+            public void onClick(boolean isToLand) {
+                isToLand = !isLand();
+                if (isToLand) {
+                    toLoad();
+                } else {
+                    toPor();
+                }
+
+            }
+        });
         mTvDes = (TextView) findViewById(R.id.tv_des);
         mIvBack = (ImageView) findViewById(R.id.iv_back);
         mIvBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onBackPressed();
+                if (isLand()) {
+                    toPor();
+                } else {
+                    finish();
+                }
             }
         });
+
+        mFl = findViewById(R.id.fl_container);
         initData();
 
     }
@@ -143,7 +167,7 @@ public class VideoDesActivity extends BaseActivity {
         msg.title = newsTitle;
         msg.description = newsTitle;
 
-        Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
+        Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.icon_launcher);
         // Bitmap thumbBmp = Bitmap.createScaledBitmap(bmp, THUMB_SIZE, THUMB_SIZE, true);
         // bmp.recycle();
         msg.thumbData = WXUitls.bmpToByteArray(bmp, true);
@@ -158,5 +182,34 @@ public class VideoDesActivity extends BaseActivity {
 
     private String buildTransaction(final String type) {
         return (type == null) ? String.valueOf(System.currentTimeMillis()) : type + System.currentTimeMillis();
+    }
+
+    private void toLoad() {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mPlayView.getLayoutParams();
+        params.width = LinearLayout.LayoutParams.MATCH_PARENT;
+        params.height = LinearLayout.LayoutParams.MATCH_PARENT;
+        mPlayView.setLayoutParams(params);
+    }
+
+    private void toPor() {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        int height = getResources().getDimensionPixelOffset(R.dimen.dp_200);
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mPlayView.getLayoutParams();
+        params.width = LinearLayout.LayoutParams.MATCH_PARENT;
+        params.height = height;
+        mPlayView.setLayoutParams(params);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (isLand()) {
+                toPor();
+                return false;
+            }
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

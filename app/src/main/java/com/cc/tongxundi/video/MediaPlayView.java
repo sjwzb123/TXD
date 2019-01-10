@@ -1,6 +1,9 @@
 package com.cc.tongxundi.video;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -25,6 +28,8 @@ public class MediaPlayView extends FrameLayout implements MediaPlayManager.PlayL
     private ProgressBar mPbPlay;
     private ImageView mIvScreen;
     private String url;
+    private OnScreenOnClickListener mLitener;
+
 
     public MediaPlayView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -35,6 +40,10 @@ public class MediaPlayView extends FrameLayout implements MediaPlayManager.PlayL
     protected void onFinishInflate() {
         super.onFinishInflate();
         initView();
+    }
+
+    public void setLitener(OnScreenOnClickListener litener) {
+        this.mLitener = litener;
     }
 
     private void initView() {
@@ -59,7 +68,20 @@ public class MediaPlayView extends FrameLayout implements MediaPlayManager.PlayL
         mIvScreen.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                VideoPlayActivity.startActivity(getContext(), url);
+                Configuration mConfiguration = getContext().getResources().getConfiguration(); //获取设置的配置信息
+                int ori = mConfiguration.orientation; //获取屏幕方向
+                if (mLitener != null)
+                    mLitener.onClick(ori != mConfiguration.ORIENTATION_LANDSCAPE);
+                //((Activity) getContext()).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                // VideoPlayActivity.startActivity(getContext(), url);
+
+
+            }
+        });
+        findViewById(R.id.view_mark).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mIvPause.performClick();
             }
         });
 
@@ -105,4 +127,9 @@ public class MediaPlayView extends FrameLayout implements MediaPlayManager.PlayL
         mPbPlay.setProgress(pro);
         mPbPlay.setSecondaryProgress(pro);
     }
+
+    public interface OnScreenOnClickListener {
+        void onClick(boolean isToLand);
+    }
+
 }

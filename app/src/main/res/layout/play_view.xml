@@ -8,6 +8,10 @@
         android:id="@+id/tx_video"
         android:layout_width="match_parent"
         android:layout_height="match_parent"></com.tencent.rtmp.ui.TXCloudVideoView>
+    <View
+        android:id="@+id/view_mark"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></View>
 
     <ImageView
         android:id="@+id/iv_cover"
@@ -58,6 +62,7 @@
             android:layout_weight="1"
             android:src="@drawable/iv_screen" />
     </LinearLayout>
+
 
 
 </RelativeLayout>

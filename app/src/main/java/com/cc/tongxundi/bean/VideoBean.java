@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class VideoBean implements Serializable {
     private int id;
-    private String description;
+    private String desc;
     private String contentUrl;
     private int duration;
     private String thumbnailUrl;
@@ -18,11 +18,11 @@ public class VideoBean implements Serializable {
     }
 
     public String getDescription() {
-        return description;
+        return desc;
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        this.desc = description;
     }
 
     public String getContentUrl() {
